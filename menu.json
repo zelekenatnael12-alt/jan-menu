@@ -1,0 +1,167 @@
+{
+  "cafe": {
+    "name": {
+      "en": "Brew & Bloom Cafe",
+      "am": "ብሩ ኤንድ ብሉም ካፌ"
+    },
+    "tagline": {
+      "en": "Crafted Coffee & Artisan Pastries",
+      "am": "በጥበብ የተዘጋጀ ቡና እና ልዩ ኬኮች"
+    },
+    "logo": "logo.png",
+    "currency": {
+      "en": "ETB",
+      "am": "ብር"
+    },
+    "telegram": "@jan_web_dev",
+    "brandName": "Jan Systems",
+    "theme": {
+      "primary": "#C8A96E",
+      "background": "#0D0905",
+      "surface": "#16100B",
+      "surfaceHover": "#221A13",
+      "text": "#F5E6C8",
+      "textWhite": "#FFFFFF",
+      "textMuted": "#A89885",
+      "accent": "#E6C587"
+    }
+  },
+  "categories": [
+    {
+      "id": "hot-drinks",
+      "name": {
+        "en": "Hot Drinks",
+        "am": "ትኩስ መጠጦች"
+      },
+      "icon": "☕",
+      "items": [
+        {
+          "name": {
+            "en": "Espresso",
+            "am": "ኤስፕሬሶ"
+          },
+          "price": 80,
+          "description": {
+            "en": "Rich, intense, and aromatic single shot of premium coffee.",
+            "am": "ጠንካራ፣ የበለጸገ መዓዛ ያለው ነጠላ የቡና ሾት።"
+          },
+          "badge": {
+            "en": "Classic",
+            "am": "ክላሲክ"
+          },
+          "image": "espresso.png"
+        },
+        {
+          "name": {
+            "en": "Macchiato",
+            "am": "ማኪያቶ"
+          },
+          "price": 95,
+          "description": {
+            "en": "Espresso stained with a dollop of warm, silky milk foam.",
+            "am": "ኤስፕሬሶ ከጥቂት የሞቀ ወተት እና ፎም ጋር የተቀላቀለ።"
+          },
+          "badge": {
+            "en": "Popular",
+            "am": "ተወዳጅ"
+          },
+          "image": ""
+        },
+        {
+          "name": {
+            "en": "Cafe Latte",
+            "am": "ካፌ ላቴ"
+          },
+          "price": 120,
+          "description": {
+            "en": "Balanced espresso topped with steamed milk and a thin layer of microfoam.",
+            "am": "በወተት እና ኤስፕሬሶ የተመጣጠነ ጣዕም ያለው ላቴ።"
+          },
+          "badge": "",
+          "image": ""
+        }
+      ]
+    },
+    {
+      "id": "pastries",
+      "name": {
+        "en": "Bakery & Pastries",
+        "am": "ኬኮች እና ዳቦዎች"
+      },
+      "icon": "🥐",
+      "items": [
+        {
+          "name": {
+            "en": "Butter Croissant",
+            "am": "ቅቤ ክሮሳን"
+          },
+          "price": 110,
+          "description": {
+            "en": "Flaky, buttery French pastry baked fresh every single morning.",
+            "am": "በየማለዳው ትኩስ የሚጋገር፣ በቅቤ የተዘጋጀ ፈረንሳይኛ ክሮሳን።"
+          },
+          "badge": {
+            "en": "New",
+            "am": "አዲስ"
+          },
+          "image": "croissant.png"
+        },
+        {
+          "name": {
+            "en": "Chocolate Brownie",
+            "am": "ቸኮሌት ብራውኒ"
+          },
+          "price": 140,
+          "description": {
+            "en": "Decadent and fudgy double chocolate brownie with walnuts.",
+            "am": "ድርብ ቸኮሌት እና ዋልነጥ የያዘ ጣፋጭ ብራውኒ።"
+          },
+          "badge": {
+            "en": "Chef's Pick",
+            "am": "የሼፉ ምርጫ"
+          },
+          "image": ""
+        }
+      ]
+    },
+    {
+      "id": "cold-drinks",
+      "name": {
+        "en": "Cold Refreshments",
+        "am": "ቀዝቃዛ መጠጦች"
+      },
+      "icon": "🧊",
+      "items": [
+        {
+          "name": {
+            "en": "Iced Spanish Latte",
+            "am": "አይስድ ስፓኒሽ ላቴ"
+          },
+          "price": 150,
+          "description": {
+            "en": "Sweetened condensed milk, espresso, and fresh cold milk over ice.",
+            "am": "ጣፋጭ የተ濃ነሰ ወተት፣ ኤስፕሬሶ እና ቀዝቃዛ ወተት በበረዶ።"
+          },
+          "badge": {
+            "en": "Best Seller",
+            "am": "በብዛት የሚሸጥ"
+          },
+          "image": ""
+        },
+        {
+          "name": {
+            "en": "Fresh Orange Juice",
+            "am": "ትኩስ የብርቱካን ጭማቂ"
+          },
+          "price": 100,
+          "description": {
+            "en": "100% naturally squeezed fresh sweet oranges.",
+            "am": "ከተፈጥሯዊ ጣፋጭ ብርቱካኖች የተጨመቀ ጭማቂ።"
+          },
+          "badge": "",
+          "image": ""
+        }
+      ]
+    }
+  ]
+}

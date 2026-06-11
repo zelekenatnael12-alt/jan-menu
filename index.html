@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jan Systems - Premium Digital Menu</title>
+  
+  <!-- Google Fonts for premium typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Ethiopic:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Outfit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* CSS Custom Properties for theme - defaults that will be overridden by menu.json if needed */
+    :root {
+      --primary: #C8A96E;
+      --background: #0D0905;
+      --surface: #16100B;
+      --surface-hover: #221A13;
+      --text: #F5E6C8;
+      --text-white: #FFFFFF;
+      --text-muted: #A89885;
+      --accent: #E6C587;
+      --font-title: 'Playfair Display', 'Noto Sans Ethiopic', serif;
+      --font-body: 'Outfit', 'Noto Sans Ethiopic', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--background);
+      color: var(--text);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      transition: background-color 0.5s ease, color 0.5s ease;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(200, 169, 110, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(230, 197, 135, 0.03) 0%, transparent 40%);
+      background-attachment: fixed;
+    }
+
+    /* Scrollbar Styling */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--background);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--surface-hover);
+      border-radius: 4px;
+      border: 2px solid var(--background);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--primary);
+    }
+
+    header {
+      padding: 3rem 1.5rem 1.5rem 1.5rem;
+      text-align: center;
+      position: relative;
+      border-bottom: 1px solid rgba(200, 169, 110, 0.1);
+      background: linear-gradient(to bottom, rgba(22, 16, 11, 0.8), transparent);
+    }
+
+    .logo-container {
+      margin-bottom: 1.5rem;
+      display: inline-block;
+      position: relative;
+    }
+
+    .logo-container::after {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      right: -10px;
+      bottom: -10px;
+      border: 1px solid rgba(200, 169, 110, 0.2);
+      border-radius: 50%;
+      pointer-events: none;
+      animation: rotate-border 20s linear infinite;
+    }
+
+    .logo {
+      width: 90px;
+      height: 90px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 2px solid var(--primary);
+      box-shadow: 0 0 25px rgba(200, 169, 110, 0.25);
+    }
+
+    .cafe-name {
+      font-family: var(--font-title);
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--text-white);
+      margin-bottom: 0.5rem;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .cafe-tagline {
+      font-size: 1rem;
+      color: var(--text-muted);
+      font-weight: 300;
+      font-style: italic;
+      letter-spacing: 2px;
+      margin-bottom: 1rem;
+    }
+
+    /* Floating Utilities */
+    .floating-utils {
+      position: fixed;
+      top: 1.5rem;
+      right: 1.5rem;
+      display: flex;
+      gap: 0.75rem;
+      z-index: 100;
+    }
+
+    .util-btn {
+      background: rgba(22, 16, 11, 0.75);
+      border: 1px solid rgba(200, 169, 110, 0.3);
+      color: var(--primary);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+
+    .util-btn:hover {
+      background: var(--primary);
+      color: var(--background);
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 8px 20px rgba(200, 169, 110, 0.4);
+    }
+
+    .util-btn.lang-toggle {
+      font-weight: 700;
+      font-size: 0.85rem;
+      font-family: var(--font-body);
+    }
+
+    /* Search & Categories Bar */
+    .sticky-nav {
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      background: rgba(13, 9, 5, 0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(200, 169, 110, 0.15);
+      padding: 0.75rem 0;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .nav-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .search-bar-container {
+      position: relative;
+      width: 100%;
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid rgba(200, 169, 110, 0.2);
+      border-radius: 25px;
+      padding: 0.65rem 1.25rem 0.65rem 2.5rem;
+      color: var(--text-white);
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 15px rgba(200, 169, 110, 0.2);
+      background: var(--surface-hover);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      pointer-events: none;
+    }
+
+    .categories-tabs {
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none; /* Firefox */
+    }
+
+    .categories-tabs::-webkit-scrollbar {
+      display: none; /* Safari/Chrome */
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      padding: 0.5rem 1.25rem;
+      border-radius: 20px;
+      font-family: var(--font-body);
+      font-weight: 500;
+      white-space: nowrap;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+    }
+
+    .tab-btn:hover {
+      color: var(--primary);
+      background: rgba(200, 169, 110, 0.05);
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: var(--background);
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(200, 169, 110, 0.3);
+    }
+
+    /* Main Menu Content */
+    main {
+      flex: 1;
+      max-width: 800px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+
+    .menu-section {
+      margin-bottom: 3.5rem;
+      scroll-margin-top: 130px;
+    }
+
+    .section-title {
+      font-family: var(--font-title);
+      font-size: 1.8rem;
+      color: var(--text-white);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      border-bottom: 1px solid rgba(200, 169, 110, 0.1);
+      padding-bottom: 0.5rem;
+    }
+
+    .section-title span.icon {
+      color: var(--primary);
+      font-size: 1.5rem;
+    }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+
+    @media (min-width: 650px) {
+      .menu-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* Premium Menu Cards */
+    .menu-item-card {
+      background: var(--surface);
+      border: 1px solid rgba(200, 169, 110, 0.1);
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+
+    .menu-item-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(200, 169, 110, 0.3);
+      box-shadow: 0 10px 30px rgba(200, 169, 110, 0.1);
+      background: var(--surface-hover);
+    }
+
+    .item-image-wrapper {
+      position: relative;
+      width: 100%;
+      height: 180px;
+      overflow: hidden;
+      background: #1e1610;
+    }
+
+    .item-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .menu-item-card:hover .item-image {
+      transform: scale(1.08);
+    }
+
+    /* Card Layout Variations */
+    .menu-item-card.has-no-image {
+      flex-direction: row;
+      min-height: 110px;
+      align-items: center;
+    }
+
+    .menu-item-card.has-no-image .item-details {
+      padding: 1.25rem;
+      width: 100%;
+    }
+
+    .item-details {
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      justify-content: space-between;
+    }
+
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .item-name {
+      font-family: var(--font-title);
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text-white);
+      line-height: 1.3;
+    }
+
+    .item-price {
+      font-family: var(--font-body);
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 1.15rem;
+      white-space: nowrap;
+    }
+
+    .item-description {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      font-weight: 300;
+      margin-bottom: 0.75rem;
+    }
+
+    .item-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
+    }
+
+    .item-badge {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 1px;
+      background: rgba(200, 169, 110, 0.15);
+      color: var(--accent);
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      border: 1px solid rgba(200, 169, 110, 0.25);
+      display: inline-block;
+    }
+
+    /* QR Code Modal styling */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(13, 9, 5, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s ease;
+      padding: 1rem;
+    }
+
+    .modal.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-content {
+      background: var(--surface);
+      border: 1px solid var(--primary);
+      border-radius: 24px;
+      padding: 2.25rem;
+      width: 100%;
+      max-width: 380px;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
+      transform: scale(0.9);
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .modal.open .modal-content {
+      transform: scale(1);
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: color 0.2s ease;
+    }
+
+    .close-modal:hover {
+      color: var(--primary);
+    }
+
+    .modal-title {
+      font-family: var(--font-title);
+      color: var(--text-white);
+      font-size: 1.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .qr-container {
+      background: white;
+      padding: 1.25rem;
+      border-radius: 16px;
+      display: inline-block;
+      margin-bottom: 1.25rem;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .qr-container img {
+      display: block;
+      width: 220px;
+      height: 220px;
+    }
+
+    .modal-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* Footer styling */
+    footer {
+      padding: 3rem 1.5rem;
+      text-align: center;
+      border-top: 1px solid rgba(200, 169, 110, 0.1);
+      margin-top: auto;
+      background: linear-gradient(to top, rgba(22, 16, 11, 0.5), transparent);
+    }
+
+    .brand-credit {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .brand-credit strong {
+      color: var(--accent);
+    }
+
+    .tg-contact {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(0, 136, 204, 0.15);
+      border: 1px solid rgba(0, 136, 204, 0.3);
+      color: #34B7F1;
+      padding: 0.5rem 1.25rem;
+      border-radius: 20px;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .tg-contact:hover {
+      background: #0088cc;
+      color: white;
+      box-shadow: 0 5px 15px rgba(0, 136, 204, 0.4);
+      transform: translateY(-2px);
+    }
+
+    /* Keyframes */
+    @keyframes rotate-border {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Empty State / Search Fallback */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1.5rem;
+      color: var(--text-muted);
+      display: none;
+    }
+
+    .empty-state i {
+      font-size: 2.5rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+      opacity: 0.6;
+    }
+
+    /* Shimmer Effect for Loading state */
+    .shimmer-card {
+      height: 120px;
+      background: linear-gradient(90deg, var(--surface) 25%, var(--surface-hover) 50%, var(--surface) 75%);
+      background-size: 200% 100%;
+      animation: loading-shimmer 1.5s infinite;
+      border-radius: 16px;
+    }
+
+    @keyframes loading-shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Utilities (Language & QR code) -->
+  <div class="floating-utils">
+    <button class="util-btn lang-toggle" id="langBtn" onclick="toggleLanguage()" title="Switch Language / ቋንቋ ቀይር">AM</button>
+    <button class="util-btn" onclick="openQRModal()" title="Show Menu QR Code"><i class="fa-solid fa-qrcode"></i></button>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="logo-container">
+      <img id="cafeLogo" src="logo.png" alt="Cafe Logo" class="logo" onerror="this.src='https://placehold.co/180x180/16100B/C8A96E?text=Cafe'">
+    </div>
+    <h1 id="cafeName" class="cafe-name">Brew & Bloom</h1>
+    <p id="cafeTagline" class="cafe-tagline">Where every cup tells a story</p>
+  </header>
+
+  <!-- Sticky Categories & Search Navigation -->
+  <div class="sticky-nav">
+    <div class="nav-container">
+      <div class="search-bar-container">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input type="text" id="searchInput" class="search-input" placeholder="Search menu..." oninput="handleSearch()">
+      </div>
+      <div id="categoriesTabs" class="categories-tabs">
+        <!-- Tabs rendered dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Menu Grid -->
+  <main>
+    <div id="menuContent">
+      <!-- Loading Shimmer State -->
+      <div class="menu-grid">
+        <div class="shimmer-card"></div>
+        <div class="shimmer-card"></div>
+        <div class="shimmer-card"></div>
+        <div class="shimmer-card"></div>
+      </div>
+    </div>
+    <div id="emptyState" class="empty-state">
+      <i class="fa-regular fa-face-frown"></i>
+      <h3 id="emptyText">No items found matching your search.</h3>
+    </div>
+  </main>
+
+  <!-- Dynamic QR Code Modal -->
+  <div id="qrModal" class="modal" onclick="closeQRModalOnOverlay(event)">
+    <div class="modal-content">
+      <button class="close-modal" onclick="closeQRModal()"><i class="fa-solid fa-xmark"></i></button>
+      <h3 id="qrModalTitle" class="modal-title">Scan QR Code</h3>
+      <div class="qr-container">
+        <img id="qrImage" src="" alt="Menu Link QR Code">
+      </div>
+      <p id="qrModalDesc" class="modal-desc">Scan this QR code with your phone camera to view the menu on your screen.</p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p class="brand-credit">
+      Powered by <strong id="brandName">Jan Systems</strong>
+    </p>
+    <a href="https://t.me/jan_web_dev" target="_blank" class="tg-contact">
+      <i class="fa-brands fa-telegram"></i> <span id="tgUser">@jan_web_dev</span>
+    </a>
+  </footer>
+
+  <script>
+    // Global State
+    let menuData = null;
+    let currentLang = 'en'; // 'en' or 'am'
+    let searchQuery = '';
+
+    // Default Fallback Menu Data in case of CORS / Offline file launch
+    const fallbackMenuData = {
+      "cafe": {
+        "name": {
+          "en": "Brew & Bloom Cafe",
+          "am": "ብሩ ኤንድ ብሉም ካፌ"
+        },
+        "tagline": {
+          "en": "Crafted Coffee & Artisan Pastries",
+          "am": "በጥበብ የተዘጋጀ ቡና እና ልዩ ኬኮች"
+        },
+        "logo": "logo.png",
+        "currency": {
+          "en": "ETB",
+          "am": "ብር"
+        },
+        "telegram": "@jan_web_dev",
+        "brandName": "Jan Systems",
+        "theme": {
+          "primary": "#C8A96E",
+          "background": "#0D0905",
+          "surface": "#16100B",
+          "surfaceHover": "#221A13",
+          "text": "#F5E6C8",
+          "textWhite": "#FFFFFF",
+          "textMuted": "#A89885",
+          "accent": "#E6C587"
+        }
+      },
+      "categories": [
+        {
+          "id": "hot-drinks",
+          "name": {
+            "en": "Hot Drinks",
+            "am": "ትኩስ መጠጦች"
+          },
+          "icon": "☕",
+          "items": [
+            {
+              "name": { "en": "Espresso", "am": "ኤስፕሬሶ" },
+              "price": 80,
+              "description": { "en": "Rich, intense, and aromatic single shot of premium coffee.", "am": "ጠንካራ፣ የበለጸገ መዓዛ ያለው ነጠላ የቡና ሾት።" },
+              "badge": { "en": "Classic", "am": "ክላሲክ" },
+              "image": "espresso.png"
+            },
+            {
+              "name": { "en": "Macchiato", "am": "ማኪያቶ" },
+              "price": 95,
+              "description": { "en": "Espresso stained with a dollop of warm, silky milk foam.", "am": "ኤስፕሬሶ ከጥቂት የሞቀ ወተት እና ፎም ጋር የተቀላቀለ።" },
+              "badge": { "en": "Popular", "am": "ተወዳጅ" },
+              "image": ""
+            }
+          ]
+        },
+        {
+          "id": "pastries",
+          "name": {
+            "en": "Bakery & Pastries",
+            "am": "ኬኮች እና ዳቦዎች"
+          },
+          "icon": "🥐",
+          "items": [
+            {
+              "name": { "en": "Butter Croissant", "am": "ቅቤ ክሮሳን" },
+              "price": 110,
+              "description": { "en": "Flaky, buttery French pastry baked fresh every single morning.", "am": "በየማለዳው ትኩስ የሚጋገር፣ በቅቤ የተዘጋጀ ፈረንሳይኛ ክሮሳን።" },
+              "badge": { "en": "New", "am": "አዲስ" },
+              "image": "croissant.png"
+            }
+          ]
+        }
+      ]
+    };
+
+    // Load Data
+    window.addEventListener('DOMContentLoaded', () => {
+      fetch('menu.json')
+        .then(response => {
+          if (!response.ok) throw new Error('Network error loading menu.json');
+          return response.json();
+        })
+        .then(data => {
+          menuData = data;
+          initMenu();
+        })
+        .catch(error => {
+          console.warn('Using offline fallback menu data due to:', error.message);
+          menuData = fallbackMenuData;
+          initMenu();
+        });
+    });
+
+    // Initialize Menu
+    function initMenu() {
+      // 1. Setup Theme Styles from JSON
+      if (menuData.cafe.theme) {
+        const theme = menuData.cafe.theme;
+        const root = document.documentElement;
+        if (theme.primary) root.style.setProperty('--primary', theme.primary);
+        if (theme.background) root.style.setProperty('--background', theme.background);
+        if (theme.surface) root.style.setProperty('--surface', theme.surface);
+        if (theme.surfaceHover) root.style.setProperty('--surface-hover', theme.surfaceHover);
+        if (theme.text) root.style.setProperty('--text', theme.text);
+        if (theme.textWhite) root.style.setProperty('--text-white', theme.textWhite);
+        if (theme.textMuted) root.style.setProperty('--text-muted', theme.textMuted);
+        if (theme.accent) root.style.setProperty('--accent', theme.accent);
+      }
+
+      // 2. Setup Cafe Brand Info
+      if (menuData.cafe.logo) {
+        document.getElementById('cafeLogo').src = menuData.cafe.logo;
+      }
+      if (menuData.cafe.brandName) {
+        document.getElementById('brandName').innerText = menuData.cafe.brandName;
+      }
+      if (menuData.cafe.telegram) {
+        document.getElementById('tgUser').innerText = menuData.cafe.telegram;
+        document.querySelector('.tg-contact').href = `https://t.me/${menuData.cafe.telegram.replace('@', '')}`;
+      }
+
+      // 3. Render
+      renderMenu();
+      setupScrollObserver();
+    }
+
+    // Toggle between English and Amharic
+    function toggleLanguage() {
+      currentLang = currentLang === 'en' ? 'am' : 'en';
+      
+      // Update UI Language Indicators
+      const langBtn = document.getElementById('langBtn');
+      langBtn.innerText = currentLang === 'en' ? 'AM' : 'EN';
+      
+      // Update Placeholder
+      const searchInput = document.getElementById('searchInput');
+      searchInput.placeholder = currentLang === 'en' ? 'Search menu...' : 'ምናሌውን ይፈልጉ...';
+
+      renderMenu();
+    }
+
+    // Handle Search Bar Input
+    function handleSearch() {
+      searchQuery = document.getElementById('searchInput').value.toLowerCase().trim();
+      renderMenu();
+    }
+
+    // Render Tabs and Menu Cards
+    function renderMenu() {
+      if (!menuData) return;
+
+      const cafe = menuData.cafe;
+      
+      // Render Header Details
+      document.getElementById('cafeName').innerText = getLocalized(cafe.name);
+      document.getElementById('cafeTagline').innerText = getLocalized(cafe.tagline);
+
+      // Filter categories and items by search query
+      let categoriesToRender = [];
+      let totalItemsMatched = 0;
+
+      menuData.categories.forEach(cat => {
+        const filteredItems = cat.items.filter(item => {
+          const nameMatch = getLocalized(item.name).toLowerCase().includes(searchQuery);
+          const descMatch = getLocalized(item.description).toLowerCase().includes(searchQuery);
+          return nameMatch || descMatch;
+        });
+
+        if (filteredItems.length > 0) {
+          categoriesToRender.push({
+            ...cat,
+            items: filteredItems
+          });
+          totalItemsMatched += filteredItems.length;
+        }
+      });
+
+      // Handle Empty State
+      const emptyState = document.getElementById('emptyState');
+      const menuContent = document.getElementById('menuContent');
+      const emptyText = document.getElementById('emptyText');
+
+      if (totalItemsMatched === 0) {
+        emptyState.style.display = 'block';
+        menuContent.innerHTML = '';
+        emptyText.innerText = currentLang === 'en' 
+          ? 'No items found matching your search.' 
+          : 'በፍለጋዎ መሰረት ምንም ነገር አልተገኘም።';
+        document.getElementById('categoriesTabs').innerHTML = '';
+        return;
+      } else {
+        emptyState.style.display = 'none';
+      }
+
+      // Render Categories Navigation Tabs
+      const tabsContainer = document.getElementById('categoriesTabs');
+      tabsContainer.innerHTML = categoriesToRender.map((cat, idx) => `
+        <button class="tab-btn ${idx === 0 ? 'active' : ''}" 
+                id="tab-${cat.id}" 
+                onclick="scrollToCategory('${cat.id}')">
+          <span>${cat.icon || ''}</span>
+          ${getLocalized(cat.name)}
+        </button>
+      `).join('');
+
+      // Render Menu Items
+      const currency = getLocalized(cafe.currency);
+      
+      menuContent.innerHTML = categoriesToRender.map(cat => `
+        <section id="${cat.id}" class="menu-section">
+          <h2 class="section-title">
+            <span class="icon">${cat.icon || '✨'}</span>
+            ${getLocalized(cat.name)}
+          </h2>
+          <div class="menu-grid">
+            ${cat.items.map(item => {
+              const hasImage = item.image && item.image.trim() !== "";
+              const badgeText = getLocalized(item.badge);
+              
+              return `
+                <div class="menu-item-card ${hasImage ? '' : 'has-no-image'}">
+                  ${hasImage ? `
+                    <div class="item-image-wrapper">
+                      <img src="${item.image}" alt="${getLocalized(item.name)}" class="item-image" onerror="this.parentElement.remove(); this.closest('.menu-item-card').classList.add('has-no-image');">
+                    </div>
+                  ` : ''}
+                  <div class="item-details">
+                    <div>
+                      <div class="item-header">
+                        <h3 class="item-name">${getLocalized(item.name)}</h3>
+                        <span class="item-price">${item.price} ${currency}</span>
+                      </div>
+                      <p class="item-description">${getLocalized(item.description)}</p>
+                    </div>
+                    <div class="item-footer">
+                      ${badgeText ? `<span class="item-badge">${badgeText}</span>` : ''}
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </section>
+      `).join('');
+    }
+
+    // Get localized text from object, string or default to empty
+    function getLocalized(obj) {
+      if (!obj) return '';
+      if (typeof obj === 'string') return obj;
+      return obj[currentLang] || obj['en'] || '';
+    }
+
+    // Scroll to section manually
+    function scrollToCategory(id) {
+      const section = document.getElementById(id);
+      if (section) {
+        // Find offset to adjust for sticky nav
+        const offset = 125;
+        const bodyRect = document.body.getBoundingClientRect().top;
+        const sectionRect = section.getBoundingClientRect().top;
+        const sectionPosition = sectionRect - bodyRect;
+        const offsetPosition = sectionPosition - offset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+      }
+    }
+
+    // Auto-update Active Tabs based on scroll position
+    let isScrolling = false;
+    function setupScrollObserver() {
+      window.addEventListener('scroll', () => {
+        if (isScrolling) return;
+        
+        const sections = document.querySelectorAll('.menu-section');
+        const scrollPosition = window.scrollY + 140; // Adjust offsets
+
+        sections.forEach(section => {
+          const top = section.offsetTop;
+          const height = section.offsetHeight;
+          const id = section.getAttribute('id');
+
+          if (scrollPosition >= top && scrollPosition < top + height) {
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            // Add to matching tab
+            const matchingTab = document.getElementById(`tab-${id}`);
+            if (matchingTab) {
+              matchingTab.classList.add('active');
+              // Horizontal scroll the tab container so active tab is visible
+              const tabsContainer = document.getElementById('categoriesTabs');
+              const tabLeft = matchingTab.offsetLeft;
+              const tabWidth = matchingTab.offsetWidth;
+              const containerWidth = tabsContainer.offsetWidth;
+              tabsContainer.scrollTo({
+                left: tabLeft - (containerWidth / 2) + (tabWidth / 2),
+                behavior: 'smooth'
+              });
+            }
+          }
+        });
+      });
+    }
+
+    // QR Code Modal Functions
+    function openQRModal() {
+      // Set Modal Texts based on Language
+      document.getElementById('qrModalTitle').innerText = currentLang === 'en' ? 'Scan QR Code' : 'QR ኮድ ይቃኙ';
+      document.getElementById('qrModalDesc').innerText = currentLang === 'en' 
+        ? 'Scan this QR code with your phone camera to view the menu instantly.'
+        : 'ምናሌውን በስልክዎ ላይ በቀጥታ ለመመልከት ይህንን የQR ኮድ በካሜራዎ ይቃኙ።';
+
+      // Generate dynamic QR code using current website URL (fallback to a test url if loaded locally via file://)
+      let currentUrl = window.location.href;
+      if (currentUrl.startsWith('file://')) {
+        currentUrl = 'https://t.me/jan_web_dev'; // Demo fallback Link
+      }
+      
+      const qrImage = document.getElementById('qrImage');
+      qrImage.src = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&color=0d0905&bgcolor=ffffff&data=${encodeURIComponent(currentUrl)}`;
+
+      document.getElementById('qrModal').classList.add('open');
+    }
+
+    function closeQRModal() {
+      document.getElementById('qrModal').classList.remove('open');
+    }
+
+    function closeQRModalOnOverlay(event) {
+      if (event.target === document.getElementById('qrModal')) {
+        closeQRModal();
+      }
+    }
+  </script>
+</body>
+</html>
