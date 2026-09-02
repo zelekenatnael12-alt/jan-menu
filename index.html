@@ -385,6 +385,11 @@
       background: var(--surface-hover);
     }
 
+    .menu-item-card.is-out-of-stock {
+      opacity: 0.65;
+      filter: grayscale(40%);
+    }
+
     .item-image-wrapper {
       position: relative;
       width: 100%;
@@ -476,6 +481,12 @@
       display: inline-block;
     }
 
+    .out-of-stock-badge {
+      background: rgba(217, 83, 79, 0.2);
+      color: #e74c3c;
+      border-color: rgba(217, 83, 79, 0.4);
+    }
+
     .add-cart-quick-btn {
       background: var(--primary);
       color: var(--background);
@@ -494,6 +505,13 @@
     .add-cart-quick-btn:hover {
       background: var(--accent);
       transform: scale(1.05);
+    }
+
+    .add-cart-quick-btn:disabled {
+      background: rgba(255,255,255,0.1) !important;
+      color: var(--text-muted) !important;
+      cursor: not-allowed;
+      transform: none !important;
     }
 
     /* Modals styling */
@@ -526,7 +544,7 @@
       border-radius: 24px;
       padding: 2rem;
       width: 100%;
-      max-width: 440px;
+      max-width: 480px;
       text-align: center;
       position: relative;
       box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
@@ -696,7 +714,7 @@
       color: var(--accent);
     }
 
-    .admin-link, .saas-link {
+    .admin-link, .saas-link, .staff-link {
       background: transparent;
       border: none;
       color: var(--text-muted);
@@ -706,7 +724,7 @@
       transition: opacity 0.2s;
     }
 
-    .admin-link:hover, .saas-link:hover {
+    .admin-link:hover, .saas-link:hover, .staff-link:hover {
       opacity: 1;
       color: var(--primary);
     }
@@ -933,6 +951,49 @@
       gap: 0.3rem;
     }
 
+    /* Inventory Table in Admin */
+    .inventory-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      text-align: left;
+    }
+    .inventory-table th, .inventory-table td {
+      padding: 0.5rem;
+      border-bottom: 1px solid rgba(200,169,110,0.15);
+    }
+    .inventory-table th {
+      color: var(--accent);
+    }
+
+    /* Staff Dashboard Order Cards */
+    .staff-order-card {
+      background: var(--surface-hover);
+      border: 1px solid rgba(200,169,110,0.2);
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      text-align: left;
+    }
+    .staff-order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      border-bottom: 1px dashed rgba(200,169,110,0.2);
+      padding-bottom: 0.4rem;
+    }
+    .order-status-badge {
+      font-size: 0.75rem;
+      font-weight: bold;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+    }
+    .status-Received { background: #3498db; color: white; }
+    .status-Preparing { background: #f39c12; color: white; }
+    .status-Served { background: #2ecc71; color: white; }
+    .status-Paid { background: #9b59b6; color: white; }
+
   </style>
 </head>
 <body>
@@ -1033,7 +1094,7 @@
         <button class="qty-btn" onclick="adjustModalQty(1)">+</button>
       </div>
 
-      <button class="btn btn-primary" style="width: 100%; padding: 0.75rem; font-size: 1rem;" onclick="confirmAddToCartModal()">
+      <button id="itemModalAddBtn" class="btn btn-primary" style="width: 100%; padding: 0.75rem; font-size: 1rem;" onclick="confirmAddToCartModal()">
         <i class="fa-solid fa-cart-plus"></i> Add to Order
       </button>
     </div>
@@ -1066,7 +1127,10 @@
         <button class="btn btn-primary" style="padding: 0.75rem; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;" onclick="sendOrderViaWhatsApp()">
           <i class="fa-brands fa-whatsapp"></i> Send Order via WhatsApp
         </button>
-        <button class="btn btn-secondary" style="padding: 0.5rem; font-size: 0.85rem;" onclick="clearCart()">
+        <button class="btn btn-secondary" style="padding: 0.5rem; font-size: 0.85rem;" onclick="saveTableOrderLocally()">
+          <i class="fa-solid fa-concierge-bell"></i> Submit Order to Waiter / Cafe System
+        </button>
+        <button class="btn btn-danger" style="padding: 0.4rem; font-size: 0.8rem;" onclick="clearCart()">
           <i class="fa-solid fa-trash"></i> Clear Order
         </button>
       </div>
@@ -1096,9 +1160,35 @@
     <div class="modal-content" style="max-width: 320px;">
       <button class="close-modal" onclick="closePinModal()"><i class="fa-solid fa-xmark"></i></button>
       <h3 class="modal-title">🔐 Admin Access</h3>
-      <p class="modal-desc" style="margin-bottom: 1rem;">Enter PIN to edit menu settings (Default PIN: 1234)</p>
+      <p class="modal-desc" style="margin-bottom: 1rem;">Enter PIN to edit menu & inventory settings (Default PIN: 1234)</p>
       <input type="password" id="pinInput" placeholder="Enter PIN" style="width: 100%; text-align: center; font-size: 1.5rem; letter-spacing: 5px; padding: 0.5rem; background: var(--background); border: 1px solid var(--primary); color: white; border-radius: 8px; margin-bottom: 1rem;" onkeypress="if(event.key==='Enter') verifyAdminPin()">
       <button class="btn btn-primary" style="width: 100%; padding: 0.6rem;" onclick="verifyAdminPin()">Unlock Editor</button>
+    </div>
+  </div>
+
+  <!-- Staff / Waiter Portal Login Modal -->
+  <div id="staffLoginModal" class="modal" onclick="closeStaffModalOnOverlay(event)">
+    <div class="modal-content" style="max-width: 340px;">
+      <button class="close-modal" onclick="closeStaffModal()"><i class="fa-solid fa-xmark"></i></button>
+      <h3 class="modal-title">👨‍🍳 Staff & Waiter Portal</h3>
+      <p class="modal-desc" style="margin-bottom: 1rem;">Enter Staff PIN to view live table orders & kitchen status (Default: 2222 or 1234)</p>
+      <input type="password" id="staffPinInput" placeholder="Enter PIN" style="width: 100%; text-align: center; font-size: 1.5rem; letter-spacing: 5px; padding: 0.5rem; background: var(--background); border: 1px solid var(--primary); color: white; border-radius: 8px; margin-bottom: 1rem;" onkeypress="if(event.key==='Enter') verifyStaffPin()">
+      <button class="btn btn-primary" style="width: 100%; padding: 0.65rem;" onclick="verifyStaffPin()">Login to Staff Dashboard</button>
+    </div>
+  </div>
+
+  <!-- Staff Live Orders Dashboard Modal -->
+  <div id="staffDashboardModal" class="modal" onclick="closeStaffDashboardOnOverlay(event)">
+    <div class="modal-content" style="max-width: 550px;">
+      <button class="close-modal" onclick="closeStaffDashboard()"><i class="fa-solid fa-xmark"></i></button>
+      <h3 class="modal-title">📋 Waiter & Kitchen Order Management</h3>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <span id="staffLoggedInName" style="font-size: 0.85rem; color: var(--accent);">Logged in: Staff</span>
+        <button class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.2rem 0.5rem;" onclick="clearAllStaffOrders()">Clear Finished Orders</button>
+      </div>
+      <div id="staffOrdersContainer" style="max-height: 400px; overflow-y: auto;">
+        <!-- Live Orders rendered here -->
+      </div>
     </div>
   </div>
 
@@ -1107,13 +1197,13 @@
     <div class="modal-content">
       <button class="close-modal" onclick="closeSaaSModal()"><i class="fa-solid fa-xmark"></i></button>
       <h3 class="modal-title">🚀 Digital Menu for Your Restaurant</h3>
-      <p class="modal-desc" style="margin-bottom: 1rem;">Upgrade your Cafe, Bar, or Restaurant with instant QR digital menus, multilingual support, table ordering, and real-time menu management!</p>
+      <p class="modal-desc" style="margin-bottom: 1rem;">Upgrade your Cafe, Bar, or Restaurant with instant QR digital menus, multilingual support, table ordering, and real-time inventory management!</p>
 
       <div style="background: var(--surface-hover); border-radius: 12px; padding: 1rem; text-align: left; margin-bottom: 1.25rem; font-size: 0.88rem; display: flex; flex-direction: column; gap: 0.5rem;">
         <div>✅ <strong>Lightning Fast:</strong> Instant load times, no app downloads required.</div>
         <div>✅ <strong>Bilingual & Themes:</strong> English & Amharic ready with instant color rebrand.</div>
         <div>✅ <strong>Table QR Generator:</strong> Stick QR codes on every table for easy ordering.</div>
-        <div>✅ <strong>Zero Monthly Fees option:</strong> One-off setup or custom white-label branding.</div>
+        <div>✅ <strong>Inventory & Staff Control:</strong> In-stock toggles and Waiter/Kitchen dashboard.</div>
       </div>
 
       <a id="saasTgBtn" href="https://t.me/jan_web_dev" target="_blank" class="btn btn-primary" style="display: block; text-decoration: none; padding: 0.75rem;">
@@ -1128,6 +1218,23 @@
       <div class="editor-header">
         <h3 class="editor-title">✏️ Jan Systems Digital Menu Admin</h3>
         <button class="btn btn-secondary" onclick="closeEditor()"><i class="fa-solid fa-xmark"></i> Close</button>
+      </div>
+
+      <!-- Inventory Fast Stock Control Section -->
+      <div class="editor-section">
+        <h4>📦 Real-time Inventory Stock Management</h4>
+        <div id="adminInventoryTableContainer" style="overflow-x: auto;">
+          <!-- Inventory Table rendered dynamically -->
+        </div>
+      </div>
+
+      <!-- Staff Management Section in Admin -->
+      <div class="editor-section">
+        <h4>👥 Staff & Waiter Account Management</h4>
+        <div id="adminStaffListContainer" style="margin-bottom: 1rem;">
+          <!-- Staff List rendered dynamically -->
+        </div>
+        <button class="btn btn-secondary" style="font-size: 0.8rem;" onclick="addNewStaffMember()">+ Add Staff Account</button>
       </div>
 
       <!-- Theme Selector Presets -->
@@ -1235,6 +1342,8 @@
   <footer>
     <p class="brand-credit">
       Powered by <strong id="brandName">Jan Systems Digital Menu</strong>
+      <button class="staff-link" onclick="promptStaffPin()" title="Staff Portal"><i class="fa-solid fa-id-badge"></i> Staff Portal</button>
+      <span>•</span>
       <button class="admin-link" onclick="promptAdminPin()" title="Open Admin Editor"><i class="fa-solid fa-gear"></i> Admin</button>
       <span>•</span>
       <button class="saas-link" onclick="openSaaSModal()" title="Get this for your restaurant"><i class="fa-solid fa-rocket"></i> Get Digital Menu</button>
@@ -1254,6 +1363,8 @@
     let cart = []; // Array of { item, qty, notes }
     let currentItemForModal = null;
     let modalItemQty = 1;
+    let activeStaffMember = null;
+    let liveTableOrders = [];
 
     // Default Fallback Menu Data
     const fallbackMenuData = {
@@ -1266,6 +1377,11 @@
         "whatsapp": "251911000000",
         "brandName": "Jan Systems Digital Menu",
         "adminPin": "1234",
+        "staff": [
+          { "id": "st-1", "name": "Abebe (Manager)", "role": "Manager", "pin": "1234" },
+          { "id": "st-2", "name": "Meti (Waiter)", "role": "Waiter", "pin": "2222" },
+          { "id": "st-3", "name": "Tebibu (Barista)", "role": "Barista", "pin": "3333" }
+        ],
         "theme": {
           "primary": "#C8A96E",
           "background": "#0D0905",
@@ -1289,6 +1405,8 @@
               "description": { "en": "Rich, intense, and aromatic single shot of premium coffee.", "am": "ጠንካራ፣ የበለጸገ መዓዛ ያለው ነጠላ የቡና ሾት።" },
               "badge": { "en": "Popular", "am": "ተወዳጅ" },
               "isFasting": true,
+              "inStock": true,
+              "stockQty": 50,
               "image": "espresso.png"
             },
             {
@@ -1297,6 +1415,8 @@
               "description": { "en": "Espresso stained with a dollop of warm, silky milk foam.", "am": "ኤስፕሬሶ ከጥቂት የሞቀ ወተት እና ፎም ጋር የተቀላቀለ።" },
               "badge": { "en": "Popular", "am": "ተወዳጅ" },
               "isFasting": false,
+              "inStock": true,
+              "stockQty": 35,
               "image": ""
             },
             {
@@ -1305,6 +1425,8 @@
               "description": { "en": "Balanced espresso topped with steamed milk and microfoam.", "am": "በወተት እና ኤስፕሬሶ የተመጣጠነ ጣዕም ያለው ላቴ።" },
               "badge": { "en": "", "am": "" },
               "isFasting": false,
+              "inStock": false,
+              "stockQty": 0,
               "image": ""
             }
           ]
@@ -1320,6 +1442,8 @@
               "description": { "en": "Flaky, buttery French pastry baked fresh every morning.", "am": "በየማለዳው ትኩስ የሚጋገር፣ በቅቤ የተዘጋጀ ፈረንሳይኛ ክሮሳን።" },
               "badge": { "en": "New", "am": "አዲስ" },
               "isFasting": false,
+              "inStock": true,
+              "stockQty": 15,
               "image": "croissant.png"
             },
             {
@@ -1328,6 +1452,8 @@
               "description": { "en": "Crispy vegetable roll stuffed with spiced carrots, cabbage, and peppers.", "am": "በጥበብ የተጠበሰ ጣፋጭ የጾም አትክልት ሮል።" },
               "badge": { "en": "Fasting", "am": "ጾም" },
               "isFasting": true,
+              "inStock": true,
+              "stockQty": 20,
               "image": ""
             }
           ]
@@ -1343,6 +1469,8 @@
               "description": { "en": "Condensed milk, espresso, and fresh cold milk over ice.", "am": "ጣፋጭ የተ濃ነሰ ወተት፣ ኤስፕሬሶ እና ቀዝቃዛ ወተት በበረዶ።" },
               "badge": { "en": "Popular", "am": "ተወዳጅ" },
               "isFasting": false,
+              "inStock": true,
+              "stockQty": 25,
               "image": ""
             },
             {
@@ -1351,6 +1479,8 @@
               "description": { "en": "100% naturally squeezed fresh sweet oranges.", "am": "ከተፈጥሯዊ ጣፋጭ ብርቱካኖች የተጨመቀ ጭማቂ።" },
               "badge": { "en": "Fasting", "am": "ጾም" },
               "isFasting": true,
+              "inStock": true,
+              "stockQty": 18,
               "image": ""
             }
           ]
@@ -1361,6 +1491,7 @@
     // Load Data Strategy: LocalStorage -> menu.json -> fallback
     window.addEventListener('DOMContentLoaded', () => {
       parseTableNumberFromURL();
+      loadLiveOrdersFromStorage();
 
       const savedLocal = localStorage.getItem('jan_menu_data');
       if (savedLocal) {
@@ -1389,12 +1520,23 @@
         });
     });
 
+    function loadLiveOrdersFromStorage() {
+      const savedOrders = localStorage.getItem('jan_live_orders');
+      if (savedOrders) {
+        try { liveTableOrders = JSON.parse(savedOrders); }
+        catch (e) { liveTableOrders = []; }
+      }
+    }
+
+    function saveLiveOrdersToStorage() {
+      localStorage.setItem('jan_live_orders', JSON.stringify(liveTableOrders));
+    }
+
     // Parse ?table= URL Parameter
     function parseTableNumberFromURL() {
       const urlParams = new URLSearchParams(window.location.search);
       let tableParam = urlParams.get('table');
       if (!tableParam) {
-        // Check hash #table-X
         if (window.location.hash.startsWith('#table-')) {
           tableParam = window.location.hash.replace('#table-', '');
         }
@@ -1411,6 +1553,21 @@
     // Initialize Menu App
     function initMenu() {
       if (!menuData) return;
+
+      // Ensure item inStock defaults to true if missing
+      menuData.categories.forEach(cat => {
+        cat.items.forEach(item => {
+          if (item.inStock === undefined) item.inStock = true;
+          if (item.stockQty === undefined) item.stockQty = 10;
+        });
+      });
+
+      if (!menuData.cafe.staff) {
+        menuData.cafe.staff = [
+          { "id": "st-1", "name": "Abebe (Manager)", "role": "Manager", "pin": "1234" },
+          { "id": "st-2", "name": "Meti (Waiter)", "role": "Waiter", "pin": "2222" }
+        ];
+      }
 
       // 1. Theme Setup
       if (menuData.cafe && menuData.cafe.theme) {
@@ -1553,10 +1710,11 @@
             ${cat.items.map((item) => {
               const hasImage = item.image && item.image.trim() !== "";
               const badgeText = getLocalized(item.badge);
+              const isAvailable = item.inStock !== false && (item.stockQty === undefined || item.stockQty > 0);
               const itemJsonEscaped = encodeURIComponent(JSON.stringify(item));
               
               return `
-                <div class="menu-item-card ${hasImage ? '' : 'has-no-image'}" onclick="openItemModal('${itemJsonEscaped}')">
+                <div class="menu-item-card ${hasImage ? '' : 'has-no-image'} ${isAvailable ? '' : 'is-out-of-stock'}" onclick="openItemModal('${itemJsonEscaped}')">
                   ${hasImage ? `
                     <div class="item-image-wrapper">
                       <img src="${item.image}" alt="${getLocalized(item.name)}" class="item-image" onerror="this.parentElement.remove(); this.closest('.menu-item-card').classList.add('has-no-image');">
@@ -1571,9 +1729,12 @@
                       <p class="item-description">${getLocalized(item.description)}</p>
                     </div>
                     <div class="item-footer">
-                      ${badgeText ? `<span class="item-badge">${badgeText}</span>` : '<span></span>'}
-                      <button class="add-cart-quick-btn" onclick="event.stopPropagation(); quickAddToCart('${itemJsonEscaped}')">
-                        <i class="fa-solid fa-plus"></i> ${currentLang === 'en' ? 'Add' : 'ጨምር'}
+                      ${!isAvailable
+                        ? `<span class="item-badge out-of-stock-badge">${currentLang === 'en' ? 'Sold Out' : 'አልቋል'}</span>`
+                        : (badgeText ? `<span class="item-badge">${badgeText}</span>` : '<span></span>')
+                      }
+                      <button class="add-cart-quick-btn" ${!isAvailable ? 'disabled' : ''} onclick="event.stopPropagation(); quickAddToCart('${itemJsonEscaped}')">
+                        <i class="fa-solid fa-${isAvailable ? 'plus' : 'ban'}"></i> ${!isAvailable ? (currentLang === 'en' ? 'Out' : 'የለም') : (currentLang === 'en' ? 'Add' : 'ጨምር')}
                       </button>
                     </div>
                   </div>
@@ -1641,11 +1802,22 @@
       currentItemForModal = item;
       modalItemQty = 1;
 
+      const isAvailable = item.inStock !== false && (item.stockQty === undefined || item.stockQty > 0);
+
       document.getElementById('itemModalTitle').innerText = getLocalized(item.name);
       document.getElementById('itemModalPrice').innerText = `${item.price} ${getLocalized(menuData.cafe.currency)}`;
       document.getElementById('itemModalDesc').innerText = getLocalized(item.description);
       document.getElementById('itemModalQty').innerText = modalItemQty;
       document.getElementById('itemModalNotes').value = '';
+
+      const addBtn = document.getElementById('itemModalAddBtn');
+      if (!isAvailable) {
+        addBtn.disabled = true;
+        addBtn.innerHTML = `<i class="fa-solid fa-ban"></i> ${currentLang === 'en' ? 'Item Out of Stock' : 'ምግቡ አልቋል'}`;
+      } else {
+        addBtn.disabled = false;
+        addBtn.innerHTML = `<i class="fa-solid fa-cart-plus"></i> ${currentLang === 'en' ? 'Add to Order' : 'ወደ ትዕዛዝ ጨምር'}`;
+      }
 
       const imgWrapper = document.getElementById('itemModalImageWrapper');
       const imgEl = document.getElementById('itemModalImage');
@@ -1682,6 +1854,7 @@
 
     function quickAddToCart(itemJsonEncoded) {
       const item = JSON.parse(decodeURIComponent(itemJsonEncoded));
+      if (item.inStock === false || item.stockQty === 0) return;
       addToCart(item, 1, '');
     }
 
@@ -1782,12 +1955,43 @@
       if (e.target === document.getElementById('cartModal')) closeCartModal();
     }
 
+    // Save Table Order locally for Staff Portal
+    function saveTableOrderLocally() {
+      if (cart.length === 0) {
+        alert(currentLang === 'en' ? "Your cart is empty!" : "ትዕዛዝዎ ባዶ ነው!");
+        return;
+      }
+      const tableNum = document.getElementById('cartTableInput').value || currentTableNumber || '1';
+      const currency = getLocalized(menuData.cafe.currency);
+      const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+      const newOrder = {
+        id: "ORD-" + Date.now(),
+        table: tableNum,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        items: JSON.parse(JSON.stringify(cart)),
+        total: totalAmount,
+        currency: currency,
+        status: "Received" // "Received", "Preparing", "Served", "Paid"
+      };
+
+      liveTableOrders.unshift(newOrder);
+      saveLiveOrdersToStorage();
+      clearCart();
+      closeCartModal();
+
+      alert(currentLang === 'en'
+        ? `Order for Table #${tableNum} sent to Cafe Waiter System!`
+        : `የጠረጴዛ #${tableNum} ትዕዛዝ ወደ አስተናጋጅ ሲስተም ተልኳል!`);
+    }
+
     // Send Order via Telegram
     function sendOrderViaTelegram() {
       if (cart.length === 0) {
         alert(currentLang === 'en' ? "Your cart is empty!" : "ትዕዛዝዎ ባዶ ነው!");
         return;
       }
+      saveTableOrderLocally();
       const tableNum = document.getElementById('cartTableInput').value || currentTableNumber || '1';
       const currency = getLocalized(menuData.cafe.currency);
       const cafeName = getLocalized(menuData.cafe.name);
@@ -1819,6 +2023,7 @@
         alert(currentLang === 'en' ? "Your cart is empty!" : "ትዕዛዝዎ ባዶ ነው!");
         return;
       }
+      saveTableOrderLocally();
       const tableNum = document.getElementById('cartTableInput').value || currentTableNumber || '1';
       const currency = getLocalized(menuData.cafe.currency);
       const cafeName = getLocalized(menuData.cafe.name);
@@ -1899,6 +2104,101 @@
       }
     }
 
+    // Staff Portal Login & Orders Dashboard
+    function promptStaffPin() {
+      document.getElementById('staffPinInput').value = '';
+      document.getElementById('staffLoginModal').classList.add('open');
+    }
+
+    function closeStaffModal() {
+      document.getElementById('staffLoginModal').classList.remove('open');
+    }
+
+    function closeStaffModalOnOverlay(e) {
+      if (e.target === document.getElementById('staffLoginModal')) closeStaffModal();
+    }
+
+    function verifyStaffPin() {
+      const pin = document.getElementById('staffPinInput').value;
+      const staffList = (menuData && menuData.cafe && menuData.cafe.staff) ? menuData.cafe.staff : [];
+      const adminPin = (menuData && menuData.cafe && menuData.cafe.adminPin) ? menuData.cafe.adminPin : '1234';
+
+      let matchedStaff = staffList.find(s => s.pin === pin);
+      if (!matchedStaff && (pin === adminPin || pin === '2222')) {
+        matchedStaff = { name: "Manager / Staff", role: "Staff", pin: pin };
+      }
+
+      if (matchedStaff) {
+        activeStaffMember = matchedStaff;
+        closeStaffModal();
+        openStaffDashboard();
+      } else {
+        alert(currentLang === 'en' ? "Invalid Staff PIN! Default Waiter PIN is 2222." : "የተሳሳተ Staff PIN!");
+      }
+    }
+
+    function openStaffDashboard() {
+      document.getElementById('staffLoggedInName').innerText = `Logged in: ${activeStaffMember.name} (${activeStaffMember.role})`;
+      renderStaffOrders();
+      document.getElementById('staffDashboardModal').classList.add('open');
+    }
+
+    function closeStaffDashboard() {
+      document.getElementById('staffDashboardModal').classList.remove('open');
+    }
+
+    function closeStaffDashboardOnOverlay(e) {
+      if (e.target === document.getElementById('staffDashboardModal')) closeStaffDashboard();
+    }
+
+    function renderStaffOrders() {
+      const container = document.getElementById('staffOrdersContainer');
+      if (liveTableOrders.length === 0) {
+        container.innerHTML = `<p style="padding: 2rem; color: var(--text-muted); text-align: center;">No active table orders yet.</p>`;
+        return;
+      }
+
+      container.innerHTML = liveTableOrders.map((ord, idx) => `
+        <div class="staff-order-card">
+          <div class="staff-order-header">
+            <div>
+              <strong style="color: var(--text-white); font-size: 1.1rem;">Table #${ord.table}</strong>
+              <span style="font-size:0.75rem; color: var(--text-muted); margin-left: 0.5rem;">${ord.time}</span>
+            </div>
+            <span class="order-status-badge status-${ord.status}">${ord.status}</span>
+          </div>
+
+          <div style="font-size: 0.88rem; margin-bottom: 0.75rem;">
+            ${ord.items.map(i => `
+              <div>• ${i.qty}x ${i.name} ${i.notes ? `<small style="color:var(--text-muted);">(${i.notes})</small>` : ''}</div>
+            `).join('')}
+            <div style="font-weight: bold; color: var(--accent); margin-top: 0.4rem;">Total: ${ord.total} ${ord.currency}</div>
+          </div>
+
+          <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+            <button class="btn btn-secondary" style="font-size:0.75rem; padding: 0.2rem 0.5rem;" onclick="updateOrderStatus(${idx}, 'Received')">Received</button>
+            <button class="btn btn-secondary" style="font-size:0.75rem; padding: 0.2rem 0.5rem;" onclick="updateOrderStatus(${idx}, 'Preparing')">Preparing</button>
+            <button class="btn btn-success" style="font-size:0.75rem; padding: 0.2rem 0.5rem;" onclick="updateOrderStatus(${idx}, 'Served')">Served</button>
+            <button class="btn btn-primary" style="font-size:0.75rem; padding: 0.2rem 0.5rem;" onclick="updateOrderStatus(${idx}, 'Paid')">Paid</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function updateOrderStatus(orderIdx, status) {
+      liveTableOrders[orderIdx].status = status;
+      saveLiveOrdersToStorage();
+      renderStaffOrders();
+    }
+
+    function clearAllStaffOrders() {
+      if (confirm("Clear finished and paid table orders?")) {
+        liveTableOrders = liveTableOrders.filter(o => o.status !== "Paid" && o.status !== "Served");
+        saveLiveOrdersToStorage();
+        renderStaffOrders();
+      }
+    }
+
     // ==========================================
     // VISUAL MENU EDITOR & LOCAL STORAGE LOGIC
     // ==========================================
@@ -1918,12 +2218,102 @@
       document.getElementById('editWhatsApp').value = localMenuDataCopy.cafe.whatsapp || '';
       document.getElementById('editAdminPin').value = localMenuDataCopy.cafe.adminPin || '1234';
 
+      renderAdminInventoryTable();
+      renderAdminStaffList();
       renderEditorSections();
       document.getElementById('editorModal').classList.add('open');
     }
 
     function closeEditor() {
       document.getElementById('editorModal').classList.remove('open');
+    }
+
+    // Render Admin Quick Inventory Table
+    function renderAdminInventoryTable() {
+      const container = document.getElementById('adminInventoryTableContainer');
+      let rowsHtml = '';
+
+      localMenuDataCopy.categories.forEach((cat, cIdx) => {
+        cat.items.forEach((item, iIdx) => {
+          const isAvailable = item.inStock !== false;
+          rowsHtml += `
+            <tr>
+              <td><strong>${item.name.en || 'Item'}</strong> (${item.name.am || ''})</td>
+              <td>${cat.name.en || 'Category'}</td>
+              <td>
+                <button class="btn ${isAvailable ? 'btn-success' : 'btn-danger'}" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;" onclick="toggleAdminInventoryStock(${cIdx}, ${iIdx})">
+                  ${isAvailable ? 'In Stock' : 'Out of Stock'}
+                </button>
+              </td>
+              <td>
+                <input type="number" value="${item.stockQty !== undefined ? item.stockQty : 10}" style="width: 60px; padding: 0.2rem; background:#0d0905; color:white; border:1px solid #c8a96e;" onchange="updateAdminStockQty(${cIdx}, ${iIdx}, this.value)">
+              </td>
+            </tr>
+          `;
+        });
+      });
+
+      container.innerHTML = `
+        <table class="inventory-table">
+          <thead>
+            <tr>
+              <th>Item Name</th>
+              <th>Category</th>
+              <th>Status</th>
+              <th>Stock Qty</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rowsHtml}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function toggleAdminInventoryStock(cIdx, iIdx) {
+      const item = localMenuDataCopy.categories[cIdx].items[iIdx];
+      item.inStock = !(item.inStock !== false);
+      renderAdminInventoryTable();
+      renderEditorSections();
+    }
+
+    function updateAdminStockQty(cIdx, iIdx, qty) {
+      const item = localMenuDataCopy.categories[cIdx].items[iIdx];
+      item.stockQty = parseInt(qty, 10) || 0;
+      if (item.stockQty <= 0) item.inStock = false;
+      else item.inStock = true;
+      renderAdminInventoryTable();
+    }
+
+    // Render Admin Staff List
+    function renderAdminStaffList() {
+      const container = document.getElementById('adminStaffListContainer');
+      if (!localMenuDataCopy.cafe.staff) localMenuDataCopy.cafe.staff = [];
+
+      container.innerHTML = localMenuDataCopy.cafe.staff.map((st, idx) => `
+        <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem;">
+          <input type="text" value="${st.name || ''}" placeholder="Staff Name" style="flex:2;" onchange="localMenuDataCopy.cafe.staff[${idx}].name = this.value">
+          <input type="text" value="${st.role || 'Waiter'}" placeholder="Role" style="flex:1;" onchange="localMenuDataCopy.cafe.staff[${idx}].role = this.value">
+          <input type="text" value="${st.pin || '2222'}" placeholder="PIN" style="width:70px; text-align:center;" onchange="localMenuDataCopy.cafe.staff[${idx}].pin = this.value">
+          <button class="btn btn-danger" style="padding: 0.2rem 0.5rem;" onclick="removeStaffMember(${idx})">X</button>
+        </div>
+      `).join('');
+    }
+
+    function addNewStaffMember() {
+      if (!localMenuDataCopy.cafe.staff) localMenuDataCopy.cafe.staff = [];
+      localMenuDataCopy.cafe.staff.push({
+        id: "st-" + Date.now(),
+        name: "New Staff",
+        role: "Waiter",
+        pin: "2222"
+      });
+      renderAdminStaffList();
+    }
+
+    function removeStaffMember(idx) {
+      localMenuDataCopy.cafe.staff.splice(idx, 1);
+      renderAdminStaffList();
     }
 
     // Apply Preset Themes
@@ -2087,6 +2477,8 @@
         "description": { "en": "Item description", "am": "ማብራሪያ" },
         "badge": { "en": "", "am": "" },
         "isFasting": false,
+        "inStock": true,
+        "stockQty": 10,
         "image": ""
       });
       renderEditorSections();

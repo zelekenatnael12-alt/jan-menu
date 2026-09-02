@@ -1,6 +1,6 @@
 # ☕ Jan Systems - Commercial Multi-Restaurant Digital QR Menu & Ordering System
 
-Welcome to the **Commercial Digital QR Menu & Table Ordering Solution** by **Jan Systems**. Designed for cafes, restaurants, bars, and hotels to operate lightning-fast digital menus with zero mandatory server costs.
+Welcome to the **Commercial Digital QR Menu, Table Ordering, Inventory & Staff Management Solution** by **Jan Systems**. Designed for cafes, restaurants, bars, and hotels to operate lightning-fast digital menus, manage inventory, and handle live table orders with zero mandatory server costs.
 
 ---
 
@@ -8,13 +8,22 @@ Welcome to the **Commercial Digital QR Menu & Table Ordering Solution** by **Jan
 
 1. **📱 Instant QR Table Ordering**
    - Automatically detects table numbers via URL query (e.g. `your-menu.com/?table=5` or `#table-5`).
-   - Customers select items, customize special instructions, view cart total, and submit orders directly via **Telegram** or **WhatsApp**.
+   - Customers select items, customize special instructions, view cart total, and submit orders directly via **Telegram**, **WhatsApp**, or internal Waiter system.
 
-2. **🌐 English & Amharic (Bilingual Support)**
+2. **📦 Real-time Inventory & Stock Management**
+   - Direct stock status toggles (`In Stock` / `Out of Stock`) and stock quantity tracking in Admin panel.
+   - Automatically displays **"Sold Out"** badges and disables order buttons for unavailable items in real-time.
+
+3. **👨‍🍳 Waiter & Kitchen Live Orders Dashboard**
+   - PIN-protected Staff Portal for Waiters and Kitchen staff (Default Staff PIN: `2222`).
+   - Live order workflow status tracking: `Received` ➔ `Preparing` ➔ `Served` ➔ `Paid`.
+   - Admin control to add/edit staff accounts and custom PIN access.
+
+4. **🌐 English & Amharic (Bilingual Support)**
    - Single-tap language switcher (`EN` / `AM`).
    - All menu names, descriptions, badges, categories, and buttons update instantly in real-time.
 
-3. **🎨 Built-in Multi-Theme Switcher**
+5. **🎨 Built-in Multi-Theme Switcher**
    - Choose from 5 pre-built luxury color themes in Admin:
      - ✨ Gold Luxury
      - 🌙 Modern Dark
@@ -22,12 +31,12 @@ Welcome to the **Commercial Digital QR Menu & Table Ordering Solution** by **Jan
      - 🍃 Fresh Green
      - ☀️ Minimal Light
 
-4. **🔐 PIN-Protected Admin & Visual Menu Editor**
+6. **🔐 PIN-Protected Admin & Visual Menu Editor**
    - Access admin panel via footer or gear icon (Default PIN: `1234`).
    - Edit cafe name, tagline, logo, currency, WhatsApp/Telegram numbers, admin PIN, categories, items, prices, badges, and photos.
    - Live browser LocalStorage updates + direct `menu.json` export & file import.
 
-5. **🌱 Dietary & Badge Tag Filtering**
+7. **🌱 Dietary & Badge Tag Filtering**
    - Quick filters for **All**, **Fasting / ጾም**, **Popular / ተወዳጅ**, and **New / አዲስ**.
 
 ---
@@ -44,7 +53,12 @@ Welcome to the **Commercial Digital QR Menu & Table Ordering Solution** by **Jan
 3. Enter the table number (e.g., Table 1, Table 2, Table 3).
 4. Save/print the generated QR code and place it on table stands!
 
-### 3. Order Channel Configuration
+### 3. Staff & Waiter Workflow
+1. Waiters click **Staff Portal** in the footer and enter their Staff PIN (e.g., `2222`).
+2. Live orders sent from table QR codes appear on the Staff Dashboard.
+3. Waiters/Kitchen update status as items move from `Received` to `Preparing`, `Served`, and `Paid`.
+
+### 4. Order Channel Configuration
 In `menu.json` or through the **Admin Editor**:
 - Set `"telegram"`: `@your_restaurant_handle`
 - Set `"whatsapp"`: `251911XXXXXX` (Country code + phone number)
@@ -63,9 +77,28 @@ In `menu.json` or through the **Admin Editor**:
     "telegram": "@jan_web_dev",
     "whatsapp": "251911000000",
     "adminPin": "1234",
+    "staff": [
+      { "id": "st-1", "name": "Abebe (Manager)", "role": "Manager", "pin": "1234" },
+      { "id": "st-2", "name": "Meti (Waiter)", "role": "Waiter", "pin": "2222" }
+    ],
     "theme": { ... }
   },
-  "categories": [ ... ]
+  "categories": [
+    {
+      "id": "hot-drinks",
+      "name": { "en": "Hot Drinks", "am": "ትኩስ መጠጦች" },
+      "items": [
+        {
+          "name": { "en": "Espresso", "am": "ኤስፕሬሶ" },
+          "price": 80,
+          "inStock": true,
+          "stockQty": 50,
+          "isFasting": true,
+          "image": "espresso.png"
+        }
+      ]
+    }
+  ]
 }
 ```
 
