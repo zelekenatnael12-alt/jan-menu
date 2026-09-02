@@ -1,12 +1,12 @@
 {
   "cafe": {
     "name": {
-      "en": "Brew & Bloom Cafe",
-      "am": "ብሩ ኤንድ ብሉም ካፌ"
+      "en": "Jan Systems Digital Menu & Bar",
+      "am": "ጃን ሲስተምስ ዲጂታል ሜኑ እና ባር"
     },
     "tagline": {
-      "en": "Crafted Coffee & Artisan Pastries",
-      "am": "በጥበብ የተዘጋጀ ቡና እና ልዩ ኬኮች"
+      "en": "Premium QR Table Menu & Instant Ordering System",
+      "am": "በQR የሚሰራ የጠረጴዛ ዲጂታል ማዘዣ"
     },
     "logo": "logo.png",
     "currency": {
@@ -14,7 +14,9 @@
       "am": "ብር"
     },
     "telegram": "@jan_web_dev",
-    "brandName": "Jan Systems",
+    "whatsapp": "251911000000",
+    "brandName": "Jan Systems Commercial SaaS",
+    "adminPin": "1234",
     "theme": {
       "primary": "#C8A96E",
       "background": "#0D0905",
@@ -37,56 +39,62 @@
       "items": [
         {
           "name": {
-            "en": "Espresso",
+            "en": "Espresso Single/Double",
             "am": "ኤስፕሬሶ"
           },
           "price": 80,
           "description": {
-            "en": "Rich, intense, and aromatic single shot of premium coffee.",
-            "am": "ጠንካራ፣ የበለጸገ መዓዛ ያለው ነጠላ የቡና ሾት።"
-          },
-          "badge": {
-            "en": "Classic",
-            "am": "ክላሲክ"
-          },
-          "image": "espresso.png"
-        },
-        {
-          "name": {
-            "en": "Macchiato",
-            "am": "ማኪያቶ"
-          },
-          "price": 95,
-          "description": {
-            "en": "Espresso stained with a dollop of warm, silky milk foam.",
-            "am": "ኤስፕሬሶ ከጥቂት የሞቀ ወተት እና ፎም ጋር የተቀላቀለ።"
+            "en": "Rich, intense, and aromatic single or double shot of Ethiopian Yirgacheffe coffee.",
+            "am": "ጠንካራ፣ የበለጸገ መዓዛ ያለው የኢትዮጵያ ይርጋጨፌ የቡና ሾት።"
           },
           "badge": {
             "en": "Popular",
             "am": "ተወዳጅ"
           },
+          "isFasting": true,
+          "image": "espresso.png"
+        },
+        {
+          "name": {
+            "en": "Special Macchiato",
+            "am": "ልዩ ማኪያቶ"
+          },
+          "price": 95,
+          "description": {
+            "en": "Freshly pulled espresso stained with a silky, warm layer of steamed milk foam.",
+            "am": "ኤስፕሬሶ ከጥቂት የሞቀ ወተት እና ፎም ጋር የተቀላቀለ።"
+          },
+          "badge": {
+            "en": "Classic",
+            "am": "ክላሲክ"
+          },
+          "isFasting": false,
           "image": ""
         },
         {
           "name": {
-            "en": "Cafe Latte",
-            "am": "ካፌ ላቴ"
+            "en": "Cafe Latte / Cappuccino",
+            "am": "ካፌ ላቴ / ካፑቺኖ"
           },
           "price": 120,
           "description": {
-            "en": "Balanced espresso topped with steamed milk and a thin layer of microfoam.",
+            "en": "Smooth espresso combined with silky steamed milk and delicate foam.",
             "am": "በወተት እና ኤስፕሬሶ የተመጣጠነ ጣዕም ያለው ላቴ።"
           },
-          "badge": "",
+          "badge": {
+            "en": "",
+            "am": ""
+          },
+          "isFasting": false,
           "image": ""
         }
       ]
     },
     {
-      "id": "pastries",
+      "id": "pastries-food",
       "name": {
-        "en": "Bakery & Pastries",
-        "am": "ኬኮች እና ዳቦዎች"
+        "en": "Food & Bakery",
+        "am": "ምግቦች እና ኬኮች"
       },
       "icon": "🥐",
       "items": [
@@ -104,22 +112,40 @@
             "en": "New",
             "am": "አዲስ"
           },
+          "isFasting": false,
           "image": "croissant.png"
         },
         {
           "name": {
-            "en": "Chocolate Brownie",
+            "en": "Fasting Vegetable Wrap / Roll",
+            "am": "የጾም አትክልት ሮል" },
+          "price": 120,
+          "description": {
+            "en": "Crispy flatbread filled with seasoned sauteed vegetables and herbs.",
+            "am": "በጥበብ የተዘጋጀ ጣፋጭ እና ጤናማ የጾም አትክልት ሮል።"
+          },
+          "badge": {
+            "en": "Fasting",
+            "am": "ጾም"
+          },
+          "isFasting": true,
+          "image": ""
+        },
+        {
+          "name": {
+            "en": "Double Chocolate Brownie",
             "am": "ቸኮሌት ብራውኒ"
           },
           "price": 140,
           "description": {
-            "en": "Decadent and fudgy double chocolate brownie with walnuts.",
+            "en": "Decadent and fudgy double chocolate brownie topped with crushed walnuts.",
             "am": "ድርብ ቸኮሌት እና ዋልነጥ የያዘ ጣፋጭ ብራውኒ።"
           },
           "badge": {
-            "en": "Chef's Pick",
+            "en": "Chef Pick",
             "am": "የሼፉ ምርጫ"
           },
+          "isFasting": false,
           "image": ""
         }
       ]
@@ -127,8 +153,8 @@
     {
       "id": "cold-drinks",
       "name": {
-        "en": "Cold Refreshments",
-        "am": "ቀዝቃዛ መጠጦች"
+        "en": "Cold Refreshments & Juices",
+        "am": "ቀዝቃዛ መጠጦች እና ጭማቂዎች"
       },
       "icon": "🧊",
       "items": [
@@ -139,26 +165,31 @@
           },
           "price": 150,
           "description": {
-            "en": "Sweetened condensed milk, espresso, and fresh cold milk over ice.",
+            "en": "Sweetened condensed milk, espresso, and fresh cold milk poured over ice.",
             "am": "ጣፋጭ የተ濃ነሰ ወተት፣ ኤስፕሬሶ እና ቀዝቃዛ ወተት በበረዶ።"
           },
           "badge": {
-            "en": "Best Seller",
-            "am": "በብዛት የሚሸጥ"
+            "en": "Popular",
+            "am": "ተወዳጅ"
           },
+          "isFasting": false,
           "image": ""
         },
         {
           "name": {
-            "en": "Fresh Orange Juice",
+            "en": "Fresh Squeezed Orange Juice",
             "am": "ትኩስ የብርቱካን ጭማቂ"
           },
           "price": 100,
           "description": {
-            "en": "100% naturally squeezed fresh sweet oranges.",
-            "am": "ከተፈጥሯዊ ጣፋጭ ብርቱካኖች የተጨመቀ ጭማቂ።"
+            "en": "100% pure naturally squeezed sweet local oranges.",
+            "am": "ከተፈጥሯዊ ጣፋጭ ብርቱካኖች የተጨመቀ ንጹህ ጭማቂ።"
           },
-          "badge": "",
+          "badge": {
+            "en": "Fasting",
+            "am": "ጾም"
+          },
+          "isFasting": true,
           "image": ""
         }
       ]

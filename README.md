@@ -1,60 +1,74 @@
-# ☕ Jan Systems - Digital Cafe Menu
+# ☕ Jan Systems - Commercial Multi-Restaurant Digital QR Menu & Ordering System
 
-Welcome to your premium, high-speed digital menu template. This menu is designed to load instantly on client devices, support multiple languages (Amharic & English), support optional item photos, and work offline or online.
-
----
-
-## 🛠️ How to Customize Menu Content
-
-The entire menu is controlled by a single file: `menu.json`. You do **not** need to touch any HTML/CSS code to change items, prices, names, or colors.
-
-Simply open `menu.json` in any text editor (like Notepad, VS Code, or even edit it online on GitHub) and update the values.
-
-### 1. Cafe & Branding Details
-Under the `"cafe"` key, you can update:
-- `"name"`: The name of the cafe in English (`"en"`) and Amharic (`"am"`).
-- `"tagline"`: Subtitle shown below the name.
-- `"logo"`: Name of your logo file (e.g. `"logo.png"`). Place the image in the same directory.
-- `"currency"`: The symbol displayed next to prices (e.g. `"ብር"` / `"ETB"`).
-- `"telegram"`: Your telegram handle shown at the bottom.
-
-### 2. Styling & Theme Colors
-You can change the look of the menu by modifying hex color codes in the `"theme"` object:
-- `"primary"`: Main highlight & tab selection color (e.g., `#C8A96E` for gold).
-- `"background"`: The overall background color.
-- `"surface"`: The card background color.
-- `"text"`: General text color.
-
-### 3. Adding & Modifying Menu Items
-Items are organized in `"categories"`. Each item has:
-- `"name"`: Bilingual name.
-- `"price"`: Number representation of the price.
-- `"description"`: Bilingual description details.
-- `"badge"`: Optional tag like "Popular", "New", "Vegan", etc. Leave as `""` if not needed.
-- `"image"`: File name of the item photo (e.g. `"espresso.png"`). If there is no image, leave as `""` and the layout automatically adjusts to look clean.
+Welcome to the **Commercial Digital QR Menu & Table Ordering Solution** by **Jan Systems**. Designed for cafes, restaurants, bars, and hotels to operate lightning-fast digital menus with zero mandatory server costs.
 
 ---
 
-## 🚀 How to Deploy (100% Free Hosting)
+## 🚀 Key Commercial Features
 
-### Option A: Netlify Drop (Fastest - 10 Seconds)
-1. Open [netlify.com/drop](https://netlify.com/drop) in your browser.
-2. Drag and drop the entire `jan menu` folder onto the page.
-3. Your site is live instantly! You can change the random URL in site settings (e.g. `brew-bloom.netlify.app`).
+1. **📱 Instant QR Table Ordering**
+   - Automatically detects table numbers via URL query (e.g. `your-menu.com/?table=5` or `#table-5`).
+   - Customers select items, customize special instructions, view cart total, and submit orders directly via **Telegram** or **WhatsApp**.
 
-### Option B: GitHub Pages (Best for automatic updates)
-1. Upload this folder to a GitHub Repository.
-2. Go to **Settings** -> **Pages**.
-3. Choose `main` branch, select `/root` folder, and click **Save**.
-4. Within 1 minute, your site will be live at `https://yourusername.github.io/your-repo-name`.
+2. **🌐 English & Amharic (Bilingual Support)**
+   - Single-tap language switcher (`EN` / `AM`).
+   - All menu names, descriptions, badges, categories, and buttons update instantly in real-time.
+
+3. **🎨 Built-in Multi-Theme Switcher**
+   - Choose from 5 pre-built luxury color themes in Admin:
+     - ✨ Gold Luxury
+     - 🌙 Modern Dark
+     - ☕ Warm Coffee
+     - 🍃 Fresh Green
+     - ☀️ Minimal Light
+
+4. **🔐 PIN-Protected Admin & Visual Menu Editor**
+   - Access admin panel via footer or gear icon (Default PIN: `1234`).
+   - Edit cafe name, tagline, logo, currency, WhatsApp/Telegram numbers, admin PIN, categories, items, prices, badges, and photos.
+   - Live browser LocalStorage updates + direct `menu.json` export & file import.
+
+5. **🌱 Dietary & Badge Tag Filtering**
+   - Quick filters for **All**, **Fasting / ጾም**, **Popular / ተወዳጅ**, and **New / አዲስ**.
 
 ---
 
-## 📱 QR Code Generation
-Customers can click the **QR Code icon** at the top right of the screen. 
-- It dynamically reads the current website link and displays a QR code that they can scan to share the menu with other tables.
-- Print this QR code and stick it on tables, counters, or windows!
+## 🛠️ How to Sell & Deploy to Restaurants
+
+### 1. Simple Deployment (Free Hosting on Netlify / GitHub Pages)
+- **Netlify Drop**: Drag & drop this repository folder onto [netlify.com/drop](https://netlify.com/drop).
+- **GitHub Pages**: Host on GitHub and turn on Pages in Repository Settings.
+
+### 2. Setting Up Tables & Printing QR Codes
+1. Open the website on your browser.
+2. Click the **QR icon** in the top right floating utilities bar.
+3. Enter the table number (e.g., Table 1, Table 2, Table 3).
+4. Save/print the generated QR code and place it on table stands!
+
+### 3. Order Channel Configuration
+In `menu.json` or through the **Admin Editor**:
+- Set `"telegram"`: `@your_restaurant_handle`
+- Set `"whatsapp"`: `251911XXXXXX` (Country code + phone number)
 
 ---
 
-*Developed by **Jan Systems** | For updates or customizations contact Telegram [@jan_web_dev](https://t.me/jan_web_dev)*
+## 📁 JSON Structure (`menu.json`)
+
+```json
+{
+  "cafe": {
+    "name": { "en": "Cafe Name", "am": "የካፌ ስም" },
+    "tagline": { "en": "Tagline", "am": "መግለጫ" },
+    "logo": "logo.png",
+    "currency": { "en": "ETB", "am": "ብር" },
+    "telegram": "@jan_web_dev",
+    "whatsapp": "251911000000",
+    "adminPin": "1234",
+    "theme": { ... }
+  },
+  "categories": [ ... ]
+}
+```
+
+---
+
+*Developed by **Jan Systems** | For white-label custom installations contact Telegram [@jan_web_dev](https://t.me/jan_web_dev)*
