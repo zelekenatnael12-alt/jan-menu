@@ -1160,7 +1160,7 @@
     <div class="modal-content" style="max-width: 320px;">
       <button class="close-modal" onclick="closePinModal()"><i class="fa-solid fa-xmark"></i></button>
       <h3 class="modal-title">🔐 Admin Access</h3>
-      <p class="modal-desc" style="margin-bottom: 1rem;">Enter PIN to edit menu & inventory settings (Default PIN: 1234)</p>
+      <p class="modal-desc" style="margin-bottom: 1rem;">Enter Admin PIN to edit menu & inventory settings (Default PIN: 1234)</p>
       <input type="password" id="pinInput" placeholder="Enter PIN" style="width: 100%; text-align: center; font-size: 1.5rem; letter-spacing: 5px; padding: 0.5rem; background: var(--background); border: 1px solid var(--primary); color: white; border-radius: 8px; margin-bottom: 1rem;" onkeypress="if(event.key==='Enter') verifyAdminPin()">
       <button class="btn btn-primary" style="width: 100%; padding: 0.6rem;" onclick="verifyAdminPin()">Unlock Editor</button>
     </div>
@@ -1298,7 +1298,7 @@
             <input type="text" id="editWhatsApp" placeholder="251900000000">
           </div>
           <div class="form-group">
-            <label>Admin PIN Password</label>
+            <label>Admin PIN Password (Stored in Browser LocalStorage)</label>
             <input type="text" id="editAdminPin" placeholder="1234">
           </div>
         </div>
@@ -1309,7 +1309,7 @@
         <h4>📁 JSON Backup & Import</h4>
         <div class="form-row" style="align-items: center;">
           <div class="form-group">
-            <label>Upload/Import `menu.json` File</label>
+            <label>Upload/Import `.json` File</label>
             <input type="file" id="importJsonFileInput" accept=".json" onchange="importJsonFromFile(event)">
           </div>
           <div class="form-group">
@@ -1365,6 +1365,7 @@
     let modalItemQty = 1;
     let activeStaffMember = null;
     let liveTableOrders = [];
+    let currentRestaurantSlug = 'menu';
 
     // Default Fallback Menu Data
     const fallbackMenuData = {
@@ -1376,12 +1377,6 @@
         "telegram": "@jan_web_dev",
         "whatsapp": "251911000000",
         "brandName": "Jan Systems Digital Menu",
-        "adminPin": "1234",
-        "staff": [
-          { "id": "st-1", "name": "Abebe (Manager)", "role": "Manager", "pin": "1234" },
-          { "id": "st-2", "name": "Meti (Waiter)", "role": "Waiter", "pin": "2222" },
-          { "id": "st-3", "name": "Tebibu (Barista)", "role": "Barista", "pin": "3333" }
-        ],
         "theme": {
           "primary": "#C8A96E",
           "background": "#0D0905",
@@ -1418,82 +1413,19 @@
               "inStock": true,
               "stockQty": 35,
               "image": ""
-            },
-            {
-              "name": { "en": "Cafe Latte", "am": "ካፌ ላቴ" },
-              "price": 120,
-              "description": { "en": "Balanced espresso topped with steamed milk and microfoam.", "am": "በወተት እና ኤስፕሬሶ የተመጣጠነ ጣዕም ያለው ላቴ።" },
-              "badge": { "en": "", "am": "" },
-              "isFasting": false,
-              "inStock": false,
-              "stockQty": 0,
-              "image": ""
-            }
-          ]
-        },
-        {
-          "id": "pastries",
-          "name": { "en": "Bakery & Pastries", "am": "ኬኮች እና ዳቦዎች" },
-          "icon": "🥐",
-          "items": [
-            {
-              "name": { "en": "Butter Croissant", "am": "ቅቤ ክሮሳን" },
-              "price": 110,
-              "description": { "en": "Flaky, buttery French pastry baked fresh every morning.", "am": "በየማለዳው ትኩስ የሚጋገር፣ በቅቤ የተዘጋጀ ፈረንሳይኛ ክሮሳን።" },
-              "badge": { "en": "New", "am": "አዲስ" },
-              "isFasting": false,
-              "inStock": true,
-              "stockQty": 15,
-              "image": "croissant.png"
-            },
-            {
-              "name": { "en": "Fasting Vegetable Roll", "am": "የጾም አትክልት ሮል" },
-              "price": 90,
-              "description": { "en": "Crispy vegetable roll stuffed with spiced carrots, cabbage, and peppers.", "am": "በጥበብ የተጠበሰ ጣፋጭ የጾም አትክልት ሮል።" },
-              "badge": { "en": "Fasting", "am": "ጾም" },
-              "isFasting": true,
-              "inStock": true,
-              "stockQty": 20,
-              "image": ""
-            }
-          ]
-        },
-        {
-          "id": "cold-drinks",
-          "name": { "en": "Cold Refreshments", "am": "ቀዝቃዛ መጠጦች" },
-          "icon": "🧊",
-          "items": [
-            {
-              "name": { "en": "Iced Spanish Latte", "am": "አይስድ ስፓኒሽ ላቴ" },
-              "price": 150,
-              "description": { "en": "Condensed milk, espresso, and fresh cold milk over ice.", "am": "ጣፋጭ የተ濃ነሰ ወተት፣ ኤስፕሬሶ እና ቀዝቃዛ ወተት በበረዶ።" },
-              "badge": { "en": "Popular", "am": "ተወዳጅ" },
-              "isFasting": false,
-              "inStock": true,
-              "stockQty": 25,
-              "image": ""
-            },
-            {
-              "name": { "en": "Fresh Orange Juice", "am": "ትኩስ የብርቱካን ጭማቂ" },
-              "price": 100,
-              "description": { "en": "100% naturally squeezed fresh sweet oranges.", "am": "ከተፈጥሯዊ ጣፋጭ ብርቱካኖች የተጨመቀ ጭማቂ።" },
-              "badge": { "en": "Fasting", "am": "ጾም" },
-              "isFasting": true,
-              "inStock": true,
-              "stockQty": 18,
-              "image": ""
             }
           ]
         }
       ]
     };
 
-    // Load Data Strategy: LocalStorage -> menu.json -> fallback
+    // Load Data Strategy: ?restaurant= / ?menu= -> LocalStorage -> json file -> fallback
     window.addEventListener('DOMContentLoaded', () => {
-      parseTableNumberFromURL();
+      parseUrlParameters();
       loadLiveOrdersFromStorage();
 
-      const savedLocal = localStorage.getItem('jan_menu_data');
+      const storageKey = `jan_menu_data_${currentRestaurantSlug}`;
+      const savedLocal = localStorage.getItem(storageKey);
       if (savedLocal) {
         try {
           menuData = JSON.parse(savedLocal);
@@ -1504,9 +1436,10 @@
         }
       }
 
-      fetch('menu.json')
+      const jsonFile = `${currentRestaurantSlug}.json`;
+      fetch(jsonFile)
         .then(response => {
-          if (!response.ok) throw new Error('Network error loading menu.json');
+          if (!response.ok) throw new Error(`Network error loading ${jsonFile}`);
           return response.json();
         })
         .then(data => {
@@ -1514,14 +1447,14 @@
           initMenu();
         })
         .catch(error => {
-          console.warn('Using offline fallback menu data due to:', error.message);
+          console.warn(`Using offline fallback for ${jsonFile} due to:`, error.message);
           menuData = fallbackMenuData;
           initMenu();
         });
     });
 
     function loadLiveOrdersFromStorage() {
-      const savedOrders = localStorage.getItem('jan_live_orders');
+      const savedOrders = localStorage.getItem(`jan_live_orders_${currentRestaurantSlug}`);
       if (savedOrders) {
         try { liveTableOrders = JSON.parse(savedOrders); }
         catch (e) { liveTableOrders = []; }
@@ -1529,17 +1462,23 @@
     }
 
     function saveLiveOrdersToStorage() {
-      localStorage.setItem('jan_live_orders', JSON.stringify(liveTableOrders));
+      localStorage.setItem(`jan_live_orders_${currentRestaurantSlug}`, JSON.stringify(liveTableOrders));
     }
 
-    // Parse ?table= URL Parameter
-    function parseTableNumberFromURL() {
+    // Parse URL Parameters for Table & Restaurant slug
+    function parseUrlParameters() {
       const urlParams = new URLSearchParams(window.location.search);
+
+      // Multi-restaurant slug support
+      const restParam = urlParams.get('restaurant') || urlParams.get('menu');
+      if (restParam) {
+        currentRestaurantSlug = restParam.toLowerCase().replace(/[^a-z0-9_-]/g, '');
+      }
+
+      // Table number support
       let tableParam = urlParams.get('table');
-      if (!tableParam) {
-        if (window.location.hash.startsWith('#table-')) {
-          tableParam = window.location.hash.replace('#table-', '');
-        }
+      if (!tableParam && window.location.hash.startsWith('#table-')) {
+        tableParam = window.location.hash.replace('#table-', '');
       }
       if (tableParam) {
         currentTableNumber = tableParam;
@@ -1548,6 +1487,32 @@
         document.getElementById('cartTableInput').value = tableParam;
         document.getElementById('qrTableNumInput').value = tableParam;
       }
+    }
+
+    // Secure PIN Helpers using LocalStorage (Never exposing PINs in served JSON)
+    function getStoredAdminPin() {
+      return localStorage.getItem(`jan_admin_pin_${currentRestaurantSlug}`) || '1234';
+    }
+
+    function setStoredAdminPin(pin) {
+      if (pin && pin.trim() !== '') {
+        localStorage.setItem(`jan_admin_pin_${currentRestaurantSlug}`, pin.trim());
+      }
+    }
+
+    function getStoredStaffList() {
+      const saved = localStorage.getItem(`jan_staff_list_${currentRestaurantSlug}`);
+      if (saved) {
+        try { return JSON.parse(saved); } catch (e) {}
+      }
+      return [
+        { "id": "st-1", "name": "Manager", "role": "Manager", "pin": "1234" },
+        { "id": "st-2", "name": "Waiter", "role": "Waiter", "pin": "2222" }
+      ];
+    }
+
+    function setStoredStaffList(list) {
+      localStorage.setItem(`jan_staff_list_${currentRestaurantSlug}`, JSON.stringify(list));
     }
 
     // Initialize Menu App
@@ -1561,13 +1526,6 @@
           if (item.stockQty === undefined) item.stockQty = 10;
         });
       });
-
-      if (!menuData.cafe.staff) {
-        menuData.cafe.staff = [
-          { "id": "st-1", "name": "Abebe (Manager)", "role": "Manager", "pin": "1234" },
-          { "id": "st-2", "name": "Meti (Waiter)", "role": "Waiter", "pin": "2222" }
-        ];
-      }
 
       // 1. Theme Setup
       if (menuData.cafe && menuData.cafe.theme) {
@@ -1646,7 +1604,6 @@
 
           if (!matchesSearch) return false;
 
-          // Tag Filter Check
           if (selectedFilterTag === 'fasting') {
             const badgeStr = (getLocalized(item.badge) || '').toLowerCase();
             return item.isFasting || badgeStr.includes('fasting') || badgeStr.includes('ጾም');
@@ -1686,7 +1643,6 @@
         emptyState.style.display = 'none';
       }
 
-      // Render Navigation Tabs
       const tabsContainer = document.getElementById('categoriesTabs');
       tabsContainer.innerHTML = categoriesToRender.map((cat, idx) => `
         <button class="tab-btn ${idx === 0 ? 'active' : ''}" 
@@ -1697,7 +1653,6 @@
         </button>
       `).join('');
 
-      // Render Sections & Cards
       const currency = getLocalized(cafe.currency);
 
       menuContent.innerHTML = categoriesToRender.map(cat => `
@@ -1892,7 +1847,6 @@
       const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
       const currencyStr = menuData ? getLocalized(menuData.cafe.currency) : 'ETB';
 
-      // Badge
       const cartBadge = document.getElementById('cartBadge');
       if (totalCount > 0) {
         cartBadge.innerText = totalCount;
@@ -1901,7 +1855,6 @@
         cartBadge.style.display = 'none';
       }
 
-      // Floating Bottom Bar
       const floatingBar = document.getElementById('floatingCartBar');
       if (totalCount > 0) {
         floatingBar.style.display = 'flex';
@@ -1911,7 +1864,6 @@
         floatingBar.style.display = 'none';
       }
 
-      // Render Cart Modal Items
       const cartContainer = document.getElementById('cartItemsContainer');
       if (cart.length === 0) {
         cartContainer.innerHTML = `<p style="padding: 1.5rem; color: var(--text-muted); text-align: center;">${currentLang === 'en' ? 'Your cart is currently empty.' : 'ትዕዛዝዎ ባዶ ነው።'}</p>`;
@@ -1972,7 +1924,7 @@
         items: JSON.parse(JSON.stringify(cart)),
         total: totalAmount,
         currency: currency,
-        status: "Received" // "Received", "Preparing", "Served", "Paid"
+        status: "Received"
       };
 
       liveTableOrders.unshift(newOrder);
@@ -2066,7 +2018,7 @@
       if (baseUrl.startsWith('file://')) {
         baseUrl = 'https://t.me/jan_web_dev';
       }
-      const fullUrl = `${baseUrl}?table=${tableVal}`;
+      const fullUrl = `${baseUrl}?restaurant=${currentRestaurantSlug}&table=${tableVal}`;
       const qrImage = document.getElementById('qrImage');
       qrImage.src = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&color=0d0905&bgcolor=ffffff&data=${encodeURIComponent(fullUrl)}`;
     }
@@ -2079,7 +2031,7 @@
     function closeSaaSModal() { document.getElementById('saasModal').classList.remove('open'); }
     function closeSaaSModalOnOverlay(e) { if (e.target === document.getElementById('saasModal')) closeSaaSModal(); }
 
-    // Admin PIN Protection
+    // Admin PIN Protection (Reads from LocalStorage)
     function promptAdminPin() {
       document.getElementById('pinInput').value = '';
       document.getElementById('pinModal').classList.add('open');
@@ -2095,7 +2047,7 @@
 
     function verifyAdminPin() {
       const enteredPin = document.getElementById('pinInput').value;
-      const expectedPin = (menuData && menuData.cafe && menuData.cafe.adminPin) ? menuData.cafe.adminPin : '1234';
+      const expectedPin = getStoredAdminPin();
       if (enteredPin === expectedPin) {
         closePinModal();
         openEditor();
@@ -2120,8 +2072,8 @@
 
     function verifyStaffPin() {
       const pin = document.getElementById('staffPinInput').value;
-      const staffList = (menuData && menuData.cafe && menuData.cafe.staff) ? menuData.cafe.staff : [];
-      const adminPin = (menuData && menuData.cafe && menuData.cafe.adminPin) ? menuData.cafe.adminPin : '1234';
+      const staffList = getStoredStaffList();
+      const adminPin = getStoredAdminPin();
 
       let matchedStaff = staffList.find(s => s.pin === pin);
       if (!matchedStaff && (pin === adminPin || pin === '2222')) {
@@ -2203,9 +2155,11 @@
     // VISUAL MENU EDITOR & LOCAL STORAGE LOGIC
     // ==========================================
     let localMenuDataCopy = null;
+    let localStaffListCopy = [];
 
     function openEditor() {
       localMenuDataCopy = JSON.parse(JSON.stringify(menuData));
+      localStaffListCopy = JSON.parse(JSON.stringify(getStoredStaffList()));
       
       document.getElementById('editCafeNameEn').value = localMenuDataCopy.cafe.name.en || '';
       document.getElementById('editCafeNameAm').value = localMenuDataCopy.cafe.name.am || '';
@@ -2216,7 +2170,7 @@
       document.getElementById('editLogo').value = localMenuDataCopy.cafe.logo || '';
       document.getElementById('editTelegram').value = localMenuDataCopy.cafe.telegram || '';
       document.getElementById('editWhatsApp').value = localMenuDataCopy.cafe.whatsapp || '';
-      document.getElementById('editAdminPin').value = localMenuDataCopy.cafe.adminPin || '1234';
+      document.getElementById('editAdminPin').value = getStoredAdminPin();
 
       renderAdminInventoryTable();
       renderAdminStaffList();
@@ -2288,21 +2242,19 @@
     // Render Admin Staff List
     function renderAdminStaffList() {
       const container = document.getElementById('adminStaffListContainer');
-      if (!localMenuDataCopy.cafe.staff) localMenuDataCopy.cafe.staff = [];
 
-      container.innerHTML = localMenuDataCopy.cafe.staff.map((st, idx) => `
+      container.innerHTML = localStaffListCopy.map((st, idx) => `
         <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem;">
-          <input type="text" value="${st.name || ''}" placeholder="Staff Name" style="flex:2;" onchange="localMenuDataCopy.cafe.staff[${idx}].name = this.value">
-          <input type="text" value="${st.role || 'Waiter'}" placeholder="Role" style="flex:1;" onchange="localMenuDataCopy.cafe.staff[${idx}].role = this.value">
-          <input type="text" value="${st.pin || '2222'}" placeholder="PIN" style="width:70px; text-align:center;" onchange="localMenuDataCopy.cafe.staff[${idx}].pin = this.value">
+          <input type="text" value="${st.name || ''}" placeholder="Staff Name" style="flex:2;" onchange="localStaffListCopy[${idx}].name = this.value">
+          <input type="text" value="${st.role || 'Waiter'}" placeholder="Role" style="flex:1;" onchange="localStaffListCopy[${idx}].role = this.value">
+          <input type="text" value="${st.pin || '2222'}" placeholder="PIN" style="width:70px; text-align:center;" onchange="localStaffListCopy[${idx}].pin = this.value">
           <button class="btn btn-danger" style="padding: 0.2rem 0.5rem;" onclick="removeStaffMember(${idx})">X</button>
         </div>
       `).join('');
     }
 
     function addNewStaffMember() {
-      if (!localMenuDataCopy.cafe.staff) localMenuDataCopy.cafe.staff = [];
-      localMenuDataCopy.cafe.staff.push({
+      localStaffListCopy.push({
         id: "st-" + Date.now(),
         name: "New Staff",
         role: "Waiter",
@@ -2312,7 +2264,7 @@
     }
 
     function removeStaffMember(idx) {
-      localMenuDataCopy.cafe.staff.splice(idx, 1);
+      localStaffListCopy.splice(idx, 1);
       renderAdminStaffList();
     }
 
@@ -2500,14 +2452,16 @@
       localMenuDataCopy.cafe.logo = document.getElementById('editLogo').value;
       localMenuDataCopy.cafe.telegram = document.getElementById('editTelegram').value;
       localMenuDataCopy.cafe.whatsapp = document.getElementById('editWhatsApp').value;
-      localMenuDataCopy.cafe.adminPin = document.getElementById('editAdminPin').value || '1234';
+
+      setStoredAdminPin(document.getElementById('editAdminPin').value);
+      setStoredStaffList(localStaffListCopy);
     }
 
     // Save directly into LocalStorage for instant live updates
     function saveToLocalStorageAndApply() {
       syncAdminInputsToCopy();
       menuData = JSON.parse(JSON.stringify(localMenuDataCopy));
-      localStorage.setItem('jan_menu_data', JSON.stringify(menuData));
+      localStorage.setItem(`jan_menu_data_${currentRestaurantSlug}`, JSON.stringify(menuData));
       initMenu();
       closeEditor();
       alert(currentLang === 'en' ? "Success! Menu changes saved to browser storage and updated live." : "ተሳክቷል! ምናሌው በስኬት ተዘምኗል።");
@@ -2525,12 +2479,12 @@
           if (imported && imported.cafe && imported.categories) {
             localMenuDataCopy = imported;
             menuData = imported;
-            localStorage.setItem('jan_menu_data', JSON.stringify(menuData));
+            localStorage.setItem(`jan_menu_data_${currentRestaurantSlug}`, JSON.stringify(menuData));
             initMenu();
-            openEditor(); // refresh
-            alert("menu.json file imported successfully!");
+            openEditor();
+            alert("Menu JSON file imported successfully!");
           } else {
-            alert("Invalid menu.json format.");
+            alert("Invalid JSON format.");
           }
         } catch(err) {
           alert("Error reading JSON file: " + err.message);
@@ -2542,7 +2496,7 @@
     // Reset to defaults
     function resetToOriginalDefaults() {
       if (confirm("Are you sure you want to reset all menu data and themes back to factory defaults?")) {
-        localStorage.removeItem('jan_menu_data');
+        localStorage.removeItem(`jan_menu_data_${currentRestaurantSlug}`);
         menuData = fallbackMenuData;
         initMenu();
         closeEditor();
@@ -2550,26 +2504,30 @@
       }
     }
 
-    // Export updated JSON to file download
+    // Export updated JSON to file download (Excludes sensitive PINs)
     function exportUpdatedJson() {
       syncAdminInputsToCopy();
       menuData = JSON.parse(JSON.stringify(localMenuDataCopy));
-      localStorage.setItem('jan_menu_data', JSON.stringify(menuData));
+      localStorage.setItem(`jan_menu_data_${currentRestaurantSlug}`, JSON.stringify(menuData));
       initMenu();
 
-      const jsonString = JSON.stringify(localMenuDataCopy, null, 2);
+      const exportCopy = JSON.parse(JSON.stringify(localMenuDataCopy));
+      delete exportCopy.cafe.adminPin;
+      delete exportCopy.cafe.staff;
+
+      const jsonString = JSON.stringify(exportCopy, null, 2);
       const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(jsonString);
       
       const linkElement = document.createElement('a');
       linkElement.setAttribute('href', dataUri);
-      linkElement.setAttribute('download', 'menu.json');
+      linkElement.setAttribute('download', `${currentRestaurantSlug}.json`);
       linkElement.click();
 
       closeEditor();
       
       alert(currentLang === 'en' 
-        ? "Success! Downloaded menu.json. Replace menu.json in your folder and push to GitHub to publish permanently."
-        : "ተሳክቷል! አዲሱ menu.json ወርዷል።");
+        ? `Success! Downloaded ${currentRestaurantSlug}.json. Replace this file in your folder to publish permanently.`
+        : "ተሳክቷል! አዲሱ JSON ማውረድ ተጠናቋል።");
     }
   </script>
 </body>

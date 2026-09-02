@@ -16,7 +16,6 @@
     "telegram": "@jan_web_dev",
     "whatsapp": "251911000000",
     "brandName": "Jan Systems Commercial SaaS",
-    "adminPin": "1234",
     "theme": {
       "primary": "#C8A96E",
       "background": "#0D0905",
@@ -52,6 +51,8 @@
             "am": "ተወዳጅ"
           },
           "isFasting": true,
+          "inStock": true,
+          "stockQty": 50,
           "image": "espresso.png"
         },
         {
@@ -69,6 +70,8 @@
             "am": "ክላሲክ"
           },
           "isFasting": false,
+          "inStock": true,
+          "stockQty": 35,
           "image": ""
         },
         {
@@ -86,6 +89,8 @@
             "am": ""
           },
           "isFasting": false,
+          "inStock": false,
+          "stockQty": 0,
           "image": ""
         }
       ]
@@ -113,12 +118,15 @@
             "am": "አዲስ"
           },
           "isFasting": false,
+          "inStock": true,
+          "stockQty": 15,
           "image": "croissant.png"
         },
         {
           "name": {
             "en": "Fasting Vegetable Wrap / Roll",
-            "am": "የጾም አትክልት ሮል" },
+            "am": "የጾም አትክልት ሮል"
+          },
           "price": 120,
           "description": {
             "en": "Crispy flatbread filled with seasoned sauteed vegetables and herbs.",
@@ -129,6 +137,8 @@
             "am": "ጾም"
           },
           "isFasting": true,
+          "inStock": true,
+          "stockQty": 20,
           "image": ""
         },
         {
@@ -146,6 +156,8 @@
             "am": "የሼፉ ምርጫ"
           },
           "isFasting": false,
+          "inStock": true,
+          "stockQty": 10,
           "image": ""
         }
       ]
@@ -173,6 +185,8 @@
             "am": "ተወዳጅ"
           },
           "isFasting": false,
+          "inStock": true,
+          "stockQty": 25,
           "image": ""
         },
         {
@@ -190,6 +204,8 @@
             "am": "ጾም"
           },
           "isFasting": true,
+          "inStock": true,
+          "stockQty": 18,
           "image": ""
         }
       ]

@@ -10,20 +10,27 @@ Welcome to the **Commercial Digital QR Menu, Table Ordering, Inventory & Staff M
    - Automatically detects table numbers via URL query (e.g. `your-menu.com/?table=5` or `#table-5`).
    - Customers select items, customize special instructions, view cart total, and submit orders directly via **Telegram**, **WhatsApp**, or internal Waiter system.
 
-2. **📦 Real-time Inventory & Stock Management**
+2. **🏢 Multi-Restaurant & Multi-Tenant Support**
+   - Serve multiple distinct cafes or restaurant branches from a single deployment using URL slugs (e.g., `your-menu.com/?restaurant=bloom` loads `bloom.json`, defaulting to `menu.json`).
+   - Generates restaurant-specific QR codes with matching parameters.
+
+3. **🔒 Security & PIN Management**
+   - Sensitive Admin and Staff PINs are managed strictly in client browser `LocalStorage` (`jan_admin_pin_<slug>`, `jan_staff_list_<slug>`) and are **never** served inside public JSON files over HTTP.
+
+4. **📦 Real-time Inventory & Stock Management**
    - Direct stock status toggles (`In Stock` / `Out of Stock`) and stock quantity tracking in Admin panel.
    - Automatically displays **"Sold Out"** badges and disables order buttons for unavailable items in real-time.
 
-3. **👨‍🍳 Waiter & Kitchen Live Orders Dashboard**
+5. **👨‍🍳 Waiter & Kitchen Live Orders Dashboard**
    - PIN-protected Staff Portal for Waiters and Kitchen staff (Default Staff PIN: `2222`).
    - Live order workflow status tracking: `Received` ➔ `Preparing` ➔ `Served` ➔ `Paid`.
    - Admin control to add/edit staff accounts and custom PIN access.
 
-4. **🌐 English & Amharic (Bilingual Support)**
+6. **🌐 English & Amharic (Bilingual Support)**
    - Single-tap language switcher (`EN` / `AM`).
    - All menu names, descriptions, badges, categories, and buttons update instantly in real-time.
 
-5. **🎨 Built-in Multi-Theme Switcher**
+7. **🎨 Built-in Multi-Theme Switcher**
    - Choose from 5 pre-built luxury color themes in Admin:
      - ✨ Gold Luxury
      - 🌙 Modern Dark
@@ -31,41 +38,45 @@ Welcome to the **Commercial Digital QR Menu, Table Ordering, Inventory & Staff M
      - 🍃 Fresh Green
      - ☀️ Minimal Light
 
-6. **🔐 PIN-Protected Admin & Visual Menu Editor**
+8. **🔐 PIN-Protected Admin & Visual Menu Editor**
    - Access admin panel via footer or gear icon (Default PIN: `1234`).
-   - Edit cafe name, tagline, logo, currency, WhatsApp/Telegram numbers, admin PIN, categories, items, prices, badges, and photos.
-   - Live browser LocalStorage updates + direct `menu.json` export & file import.
-
-7. **🌱 Dietary & Badge Tag Filtering**
-   - Quick filters for **All**, **Fasting / ጾም**, **Popular / ተወዳጅ**, and **New / አዲስ**.
+   - Edit cafe name, tagline, logo, currency, WhatsApp/Telegram numbers, categories, items, prices, badges, and photos.
+   - Live browser LocalStorage updates + direct JSON export & file import.
 
 ---
 
-## 🛠️ How to Sell & Deploy to Restaurants
+## 🏗️ Architecture & Data Sync Considerations
+
+- **LocalStorage Sync Scope**: Browser `LocalStorage` is used for offline persistence and instant local admin updates on the device doing the edits.
+- **Permanent Deployment & Cross-Device Sync**: To make menu changes visible across all customer devices and staff phones globally, click **Download JSON** in the Admin panel and commit the updated `.json` file to your hosting server (e.g. GitHub/Netlify). For cloud database sync (Firebase/Supabase), contact Jan Systems for custom server integrations.
+
+---
+
+## 🛠️ How to Deploy & Use
 
 ### 1. Simple Deployment (Free Hosting on Netlify / GitHub Pages)
 - **Netlify Drop**: Drag & drop this repository folder onto [netlify.com/drop](https://netlify.com/drop).
 - **GitHub Pages**: Host on GitHub and turn on Pages in Repository Settings.
 
-### 2. Setting Up Tables & Printing QR Codes
+### 2. Multi-Restaurant Deployment
+To host multiple restaurants under one domain:
+- Create separate JSON files (e.g., `bloom.json`, `downtown.json`).
+- Direct customers or print QR codes with `?restaurant=bloom` or `?restaurant=downtown`.
+
+### 3. Setting Up Tables & Printing QR Codes
 1. Open the website on your browser.
 2. Click the **QR icon** in the top right floating utilities bar.
 3. Enter the table number (e.g., Table 1, Table 2, Table 3).
 4. Save/print the generated QR code and place it on table stands!
 
-### 3. Staff & Waiter Workflow
+### 4. Staff & Waiter Workflow
 1. Waiters click **Staff Portal** in the footer and enter their Staff PIN (e.g., `2222`).
 2. Live orders sent from table QR codes appear on the Staff Dashboard.
 3. Waiters/Kitchen update status as items move from `Received` to `Preparing`, `Served`, and `Paid`.
 
-### 4. Order Channel Configuration
-In `menu.json` or through the **Admin Editor**:
-- Set `"telegram"`: `@your_restaurant_handle`
-- Set `"whatsapp"`: `251911XXXXXX` (Country code + phone number)
-
 ---
 
-## 📁 JSON Structure (`menu.json`)
+## 📁 JSON Structure (`menu.json` / `slug.json`)
 
 ```json
 {
@@ -76,12 +87,12 @@ In `menu.json` or through the **Admin Editor**:
     "currency": { "en": "ETB", "am": "ብር" },
     "telegram": "@jan_web_dev",
     "whatsapp": "251911000000",
-    "adminPin": "1234",
-    "staff": [
-      { "id": "st-1", "name": "Abebe (Manager)", "role": "Manager", "pin": "1234" },
-      { "id": "st-2", "name": "Meti (Waiter)", "role": "Waiter", "pin": "2222" }
-    ],
-    "theme": { ... }
+    "brandName": "Jan Systems Commercial SaaS",
+    "theme": {
+      "primary": "#C8A96E",
+      "background": "#0D0905",
+      "surface": "#16100B"
+    }
   },
   "categories": [
     {

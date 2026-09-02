@@ -1,0 +1,61 @@
+{
+  "cafe": {
+    "name": {
+      "en": "Bloom Artisan Bakery & Cafe",
+      "am": "ብሉም አርቲሳን ኬክ እና ካፌ"
+    },
+    "tagline": {
+      "en": "Organic Pastries, Artisan Coffees & Healthy Breakfasts",
+      "am": "ኦርጋኒክ ኬኮች፣ ቡና እና ጤናማ ቁርስ"
+    },
+    "logo": "logo.png",
+    "currency": {
+      "en": "ETB",
+      "am": "ብር"
+    },
+    "telegram": "@jan_web_dev",
+    "whatsapp": "251911000000",
+    "brandName": "Jan Systems Commercial SaaS",
+    "theme": {
+      "primary": "#2ECC71",
+      "background": "#0A1C13",
+      "surface": "#122A1E",
+      "surfaceHover": "#1B3D2C",
+      "text": "#E0F2E9",
+      "textWhite": "#FFFFFF",
+      "textMuted": "#8FBDA5",
+      "accent": "#27AE60"
+    }
+  },
+  "categories": [
+    {
+      "id": "artisan-coffee",
+      "name": {
+        "en": "Artisan Coffee",
+        "am": "ልዩ ቡናዎች"
+      },
+      "icon": "☕",
+      "items": [
+        {
+          "name": {
+            "en": "Organic V60 Pour Over",
+            "am": "ኦርጋኒክ ቪ60 ቡና"
+          },
+          "price": 130,
+          "description": {
+            "en": "Single origin Guji coffee beans freshly ground and hand poured.",
+            "am": "ከትኩስ ጉጂ ቡና የተፈላ ልዩ የቪ60 ቡና።"
+          },
+          "badge": {
+            "en": "Specialty",
+            "am": "ልዩ"
+          },
+          "isFasting": true,
+          "inStock": true,
+          "stockQty": 40,
+          "image": ""
+        }
+      ]
+    }
+  ]
+}
