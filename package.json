@@ -1,0 +1,13 @@
+{
+  "name": "jan-systems-digital-menu",
+  "version": "1.0.0",
+  "description": "Jan Systems - Digital Cafe Menu with multilingual support",
+  "main": "index.html",
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0"
+  }
+}
