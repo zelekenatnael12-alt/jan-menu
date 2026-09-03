@@ -1014,10 +1014,10 @@
         document.getElementById('cafeLogo').src = menuData.cafe.logo;
       }
       if (menuData.cafe.brandName) {
-        document.getElementById('brandName').innerText = menuData.cafe.brandName;
+        document.getElementById('brandName').textContent = menuData.cafe.brandName;
       }
       if (menuData.cafe.telegram) {
-        document.getElementById('tgUser').innerText = menuData.cafe.telegram;
+        document.getElementById('tgUser').textContent = menuData.cafe.telegram;
         document.querySelector('.tg-contact').href = `https://t.me/${menuData.cafe.telegram.replace('@', '')}`;
       }
 
@@ -1032,7 +1032,7 @@
       
       // Update UI Language Indicators
       const langBtn = document.getElementById('langBtn');
-      langBtn.innerText = currentLang === 'en' ? 'AM' : 'EN';
+      langBtn.textContent = currentLang === 'en' ? 'AM' : 'EN';
       
       // Update Placeholder
       const searchInput = document.getElementById('searchInput');
@@ -1054,8 +1054,8 @@
       const cafe = menuData.cafe;
       
       // Render Header Details
-      document.getElementById('cafeName').innerText = getLocalized(cafe.name);
-      document.getElementById('cafeTagline').innerText = getLocalized(cafe.tagline);
+      document.getElementById('cafeName').textContent = getLocalized(cafe.name);
+      document.getElementById('cafeTagline').textContent = getLocalized(cafe.tagline);
 
       // Filter categories and items by search query
       let categoriesToRender = [];
@@ -1085,7 +1085,7 @@
       if (totalItemsMatched === 0) {
         emptyState.style.display = 'block';
         menuContent.innerHTML = '';
-        emptyText.innerText = currentLang === 'en' 
+        emptyText.textContent = currentLang === 'en'
           ? 'No items found matching your search.' 
           : 'በፍለጋዎ መሰረት ምንም ነገር አልተገኘም።';
         document.getElementById('categoriesTabs').innerHTML = '';
